@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe LocationsController do
+  let(:user) { create :user }
+
+  before { sign_in user }
 
   # This should return the minimal set of attributes required to create a valid
   # Location. As you add validations to Location, be sure to
@@ -113,5 +116,5 @@ describe LocationsController do
       response.should redirect_to(locations_url)
     end
   end
-
 end
+

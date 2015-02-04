@@ -10,6 +10,9 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'spring',        group: :development
+gem 'pry'
+gem 'pry-nav'
+gem 'pry-rails'
 
 gem 'devise'
 
@@ -18,6 +21,9 @@ group :development, :test do
 end
 
 group :test do
+  gem 'factory_girl'
+  gem 'factory_girl_rails'
+  gem 'faker'
   gem 'shoulda-matchers'
 end
 

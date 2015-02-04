@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe "Locations" do
+describe "Characters" do
 end

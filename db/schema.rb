@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150204200943) do
+ActiveRecord::Schema.define(version: 20150204210726) do
+
+  create_table "characters", force: true do |t|
+    t.string   "name"
+    t.integer  "strength"
+    t.integer  "dexterity"
+    t.integer  "constitution"
+    t.integer  "intelligence"
+    t.integer  "wisdom"
+    t.integer  "charisma"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "games", force: true do |t|
     t.datetime "created_at"
