@@ -4,3 +4,4 @@ FactoryGirl.define do
     password { SecureRandom.uuid }
   end
 end
+
