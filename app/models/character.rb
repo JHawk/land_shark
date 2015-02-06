@@ -1,6 +1,9 @@
 require 'faker'
 
 class Character < ActiveRecord::Base
+  belongs_to :location
+  belongs_to :game
+
   attr_accessor :name,
     :strength,
     :dexterity,

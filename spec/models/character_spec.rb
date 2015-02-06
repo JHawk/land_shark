@@ -9,6 +9,9 @@ describe Character do
   it { should validate_presence_of(:wisdom) }
   it { should validate_presence_of(:charisma) }
 
+  it { should belong_to(:location) }
+  it { should belong_to(:game) }
+
   describe "#generate_characteristics" do
     let(:character) { Character.new }
 

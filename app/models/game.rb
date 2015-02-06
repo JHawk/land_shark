@@ -23,8 +23,17 @@ class Game < ActiveRecord::Base
     self.locations << location
   end
 
+  def current_location!
+    locations.first.update_attributes!(is_current: true)
+    cl = current_location
+    characters.each do |character|
+      character.update_attributes!(location_id: cl.id)
+    end
+    cl.reload
+  end
+
   def json_map
-    current_location
+    current_location || current_location!
   end
 end
 
