@@ -5,7 +5,18 @@ describe GamesController do
   let(:valid_session) { {} }
 
   let(:user) { FactoryGirl.create :user }
+
   before { sign_in user }
+
+  describe "GET show" do
+    it "returns the game json" do
+      game = FactoryGirl.create :game
+
+      get :show, {:id => game.to_param}, format: :json
+
+      assigns(:game).should be_a(Game)
+    end
+  end
 
   describe "POST create" do
     describe "with valid params" do

@@ -55,6 +55,8 @@ GEM
       railties (>= 3.0.0)
     faker (1.4.3)
       i18n (~> 0.5)
+    haml (4.0.6)
+      tilt
     hike (1.2.3)
     i18n (0.7.0)
     jbuilder (2.2.6)
@@ -164,6 +166,7 @@ DEPENDENCIES
   factory_girl
   factory_girl_rails
   faker
+  haml
   jbuilder (~> 2.0)
   jquery-rails
   pry

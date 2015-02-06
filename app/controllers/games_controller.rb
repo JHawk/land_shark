@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_game, only: [:show, :edit, :update, :destroy]
 
-  respond_to :html
+  respond_to :html, :json
 
   def index
     @games = Game.all
@@ -10,7 +10,10 @@ class GamesController < ApplicationController
   end
 
   def show
-    respond_with(@game)
+    respond_to do |format|
+      format.html { @game }
+      format.json { @game }
+    end
   end
 
   def new

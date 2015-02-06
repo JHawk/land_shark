@@ -1,3 +1,5 @@
+require 'faker'
+
 class Character < ActiveRecord::Base
   attr_accessor :name,
     :strength,

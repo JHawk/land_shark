@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150204215644) do
+ActiveRecord::Schema.define(version: 20150206010941) do
 
   create_table "characters", force: true do |t|
     t.string   "name"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20150204215644) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "game_id"
+    t.boolean  "is_current"
   end
 
   add_index "locations", ["game_id"], name: "index_locations_on_game_id"

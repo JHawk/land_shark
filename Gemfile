@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'faker'
+gem 'haml'
 gem 'rails', '4.1.0'
 gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.3'
@@ -23,7 +25,6 @@ end
 group :test do
   gem 'factory_girl'
   gem 'factory_girl_rails'
-  gem 'faker'
   gem 'shoulda-matchers'
 end
 

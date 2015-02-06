@@ -1,3 +1,15 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+fetchMap = () ->
+  $.ajax(
+    url: '/games/1'
+    data:
+      id: 1
+    success: onMapSuccess
+    dataType: 'json'
+    type: "GET"
+        )
+
+$(document).ready -> if $('.loaction_map').length > 0
+                       fetchMap()
+onMapSuccess = (response) ->
+  undefined
+
