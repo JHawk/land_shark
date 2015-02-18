@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150206021138) do
+ActiveRecord::Schema.define(version: 20150218161809) do
 
   create_table "characters", force: true do |t|
     t.string   "name"
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(version: 20150206021138) do
     t.datetime "updated_at"
     t.integer  "game_id"
     t.integer  "location_id"
+    t.integer  "x"
+    t.integer  "y"
+    t.integer  "z"
   end
 
   add_index "characters", ["game_id"], name: "index_characters_on_game_id"

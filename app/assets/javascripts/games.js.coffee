@@ -13,5 +13,5 @@ $(document).ready -> if $('.location_map').length > 0
                        fetchMap(id)
 
 onMapSuccess = (response) ->
-  undefined
-
+  for sprite in response['json_map']
+    console.log sprite

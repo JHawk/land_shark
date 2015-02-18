@@ -12,6 +12,7 @@ describe Game do
 
     it 'will create a new character' do
       expect(game.characters.count).to eq(1)
+      expect(game.characters.name).not_to be_nil
     end
 
     it 'will create a new location' do

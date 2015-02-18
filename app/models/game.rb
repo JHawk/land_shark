@@ -12,9 +12,7 @@ class Game < ActiveRecord::Base
   end
 
   def generate_characters!
-    character = Character.new.generate_characteristics
-    character.save!
-    self.characters << character
+    self.characters << Character.generate!
   end
 
   def generate_locations!
@@ -25,15 +23,13 @@ class Game < ActiveRecord::Base
 
   def current_location!
     locations.first.update_attributes!(is_current: true)
-    cl = current_location
-    characters.each do |character|
-      character.update_attributes!(location_id: cl.id)
-    end
-    cl.reload
+    current_location.spawn(characters)
+    current_location.reload
   end
 
   def json_map
     current_location || current_location!
+    current_location.visible_sprites
   end
 end
 

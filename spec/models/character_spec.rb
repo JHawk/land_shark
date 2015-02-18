@@ -12,23 +12,33 @@ describe Character do
   it { should belong_to(:location) }
   it { should belong_to(:game) }
 
-  describe "#generate_characteristics" do
-    let(:character) { Character.new }
+  describe ".generate!" do
+    subject { Character.generate! }
 
-    subject { character.generate_characteristics }
+    it { subject.id.should_not be_nil }
+  end
 
-    it 'will assign attributes' do
-      subject
+  describe ".#generate_characteristics" do
+    subject { Character.generate_characteristics }
 
-      expect(character.name).to be_present
+    it 'will generate attributes' do
+      characteristics = subject
 
-      expect(character.strength).to be_present
-      expect(character.dexterity).to be_present
-      expect(character.constitution).to be_present
-      expect(character.intelligence).to be_present
-      expect(character.wisdom).to be_present
-      expect(character.charisma).to be_present
+      expect(characteristics[:name]).to be_present
+
+      expect(characteristics[:strength]).to be_present
+      expect(characteristics[:dexterity]).to be_present
+      expect(characteristics[:constitution]).to be_present
     end
+  end
+
+  describe "#position" do
+    let(:character) { Character.new(x: 1, y: 2, z: 3) }
+    subject { character.position }
+
+    it { subject[0].should eq 1 }
+    it { subject[1].should eq 2 }
+    it { subject[2].should eq 3 }
   end
 end
 

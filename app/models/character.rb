@@ -4,14 +4,6 @@ class Character < ActiveRecord::Base
   belongs_to :location
   belongs_to :game
 
-  attr_accessor :name,
-    :strength,
-    :dexterity,
-    :constitution,
-    :intelligence,
-    :wisdom,
-    :charisma
-
   validates_presence_of :name,
     :strength,
     :dexterity,
@@ -20,21 +12,31 @@ class Character < ActiveRecord::Base
     :wisdom,
     :charisma
 
-  def rand_attribute
-    rand(20) + 1
+  class << self
+    def generate!
+      self.create!(generate_characteristics)
+    end
+
+    def generate_characteristics
+      {
+        name: Faker::Name.name,
+
+        strength: rand_attribute,
+        dexterity: rand_attribute,
+        constitution: rand_attribute,
+        intelligence: rand_attribute,
+        wisdom: rand_attribute,
+        charisma: rand_attribute
+      }
+    end
+
+    def rand_attribute
+      rand(20) + 1
+    end
   end
 
-  def generate_characteristics
-    self.name = Faker::Name.name
-
-    self.strength = rand_attribute
-    self.dexterity = rand_attribute
-    self.constitution = rand_attribute
-    self.intelligence = rand_attribute
-    self.wisdom = rand_attribute
-    self.charisma = rand_attribute
-
-    self
+  def position
+    [x,y,z]
   end
 end
 
