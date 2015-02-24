@@ -59,6 +59,42 @@ describe Location do
     end
   end
 
+  describe "#move!" do
+    subject { location.move!(character, position) }
+
+    let(:position) { [1,1,1] }
+
+    context "when character is at location" do
+      let(:location) { character.location }
+      let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:2 }
+
+      it { should be_true }
+
+      it "updates the character's position" do
+        subject
+
+        expect(character.reload.x).to eq(1)
+        expect(character.reload.y).to eq(1)
+        expect(character.reload.z).to eq(1)
+      end
+    end
+
+    context "when character is not at location" do
+      let(:location) { FactoryGirl.create :location }
+      let(:character) { FactoryGirl.create :character, x:2, y:2, z:2 }
+
+      it { should be_false }
+
+      it "updates skips the character's updates" do
+        subject
+
+        expect(character.reload.x).to eq(2)
+        expect(character.reload.y).to eq(2)
+        expect(character.reload.z).to eq(2)
+      end
+    end
+  end
+
   describe "#visible_sprites" do
     subject { location.visible_sprites }
 

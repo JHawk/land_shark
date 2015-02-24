@@ -1,8 +1,4 @@
 class Location < ActiveRecord::Base
-  MAX_X = 100
-  MAX_Y = 100
-  MAX_Z = 100
-
   has_many :characters do
     def visible
       where('x IS NOT NULL').
@@ -13,10 +9,22 @@ class Location < ActiveRecord::Base
 
   def rand_position
     {
-      x: rand(MAX_X),
-      y: rand(MAX_Y),
-      z: rand(MAX_Z)
+      x: rand(max_x),
+      y: rand(max_y),
+      z: rand(max_z)
     }
+  end
+
+  def move!(character, position)
+    if characters.include?(character)
+      character.update_attributes!({
+        x: position[0],
+        y: position[1],
+        z: position[2]
+      })
+    else
+      false
+    end
   end
 
   def spawn(characters)

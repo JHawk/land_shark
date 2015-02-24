@@ -9,6 +9,8 @@ FactoryGirl.define do
     wisdom { rand(20) + 1 }
     charisma { rand(20) + 1 }
 
+    land_speed { rand(20) + 1 }
+
     factory :character_visible_at_location do
       location { FactoryGirl.create :location }
       x { rand(100) }

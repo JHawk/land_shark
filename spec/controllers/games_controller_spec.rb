@@ -8,6 +8,27 @@ describe GamesController do
 
   before { sign_in user }
 
+=begin
+  describe "PUT update" do
+    let(:game) { FactoryGirl.create :game }
+
+    context 'move' do
+      let(:character) {FactoryGirl.create :character}
+
+      before do
+        Game.any_instance.should_receive(:move!)
+      end
+
+      it "returns the game json" do
+        put :update, {:id => game.to_param, 'game_action' => 'move', 'character_id' => character.id}, format: :json
+
+        assigns(:game).should be_a(Game)
+        expect(response).to be_ok
+      end
+    end
+  end
+=end
+
   describe "GET show" do
     it "returns the game json" do
       game = FactoryGirl.create :game

@@ -32,8 +32,18 @@ class GamesController < ApplicationController
   end
 
   def update
-    @game.update(game_params)
-    respond_with(@game)
+    if params['game_action'] == 'move'
+      character = Character.find params['character_id']
+      position = [params['x'], params['y'], params['z']].map(&:to_i)
+      @game.move!(character, position)
+    else
+      raise "#{params['game_action']} is not supported yet!"
+    end
+
+    respond_to do |format|
+      format.html { @game }
+      format.json { @game }
+    end
   end
 
   def destroy
@@ -42,11 +52,12 @@ class GamesController < ApplicationController
   end
 
   private
-    def set_game
-      @game = Game.find(params[:id])
-    end
 
-    def game_params
-      params[:game]
-    end
+  def set_game
+    @game = Game.find(params[:id])
+  end
+
+  def game_params
+    params[:game]
+  end
 end

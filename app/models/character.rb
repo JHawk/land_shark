@@ -10,7 +10,9 @@ class Character < ActiveRecord::Base
     :constitution,
     :intelligence,
     :wisdom,
-    :charisma
+    :charisma,
+
+    :land_speed
 
   class << self
     def generate!
@@ -26,7 +28,9 @@ class Character < ActiveRecord::Base
         constitution: rand_attribute,
         intelligence: rand_attribute,
         wisdom: rand_attribute,
-        charisma: rand_attribute
+        charisma: rand_attribute,
+
+        land_speed: rand_attribute
       }
     end
 

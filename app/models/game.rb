@@ -7,6 +7,10 @@ class Game < ActiveRecord::Base
 
   after_create :generate_characters!, :generate_locations!
 
+  def move!(character, position)
+    current_location.move!(character, position)
+  end
+
   def current_location
     locations.where(is_current: true).first
   end
@@ -30,6 +34,14 @@ class Game < ActiveRecord::Base
   def json_map
     current_location || current_location!
     current_location.visible_sprites
+  end
+
+  def max_x
+    current_location.max_x
+  end
+
+  def max_y
+    current_location.max_y
   end
 end
 
