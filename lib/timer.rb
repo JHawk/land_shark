@@ -11,8 +11,8 @@ module Timer
 
     elapsed = Time.now - start_time
 
-    Rails.logger.debug "#{message} #{elapsed}"
-    result
+    print "#{message} #{elapsed}"
+    [result, elapsed]
   end
 
   def time(message, &block)
@@ -28,8 +28,8 @@ module Timer
 
     elapsed = Time.now - start_time
 
-    Rails.logger.debug " #{elapsed}"
-    result
+    print " #{elapsed}"
+    [result, elapsed]
   end
 
 end

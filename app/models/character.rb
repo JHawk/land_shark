@@ -39,8 +39,12 @@ class Character < ActiveRecord::Base
     end
   end
 
-  def position
+  def position_a
     [x,y,z]
+  end
+
+  def position
+    {x:x,y:y,z:z}
   end
 end
 

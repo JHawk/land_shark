@@ -10,7 +10,7 @@ describe Timer do
     context 'no args' do
       subject { timed.time('message') { result } }
 
-      it { should eq(result) }
+      it { subject.first.should eq(result) }
     end
 
     context 'one arg' do
@@ -32,7 +32,7 @@ describe Timer do
           end
         end
 
-        it { should eq(result) }
+        it { subject.first.should eq(result) }
       end
     end
   end

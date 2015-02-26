@@ -32,9 +32,9 @@ describe Character do
     end
   end
 
-  describe "#position" do
+  describe "#position_a" do
     let(:character) { Character.new(x: 1, y: 2, z: 3) }
-    subject { character.position }
+    subject { character.position_a }
 
     it { subject[0].should eq 1 }
     it { subject[1].should eq 2 }

@@ -1,8 +1,11 @@
 require 'pathfinder/heuristics/manhattan'
+require 'timer'
 
 module Pathfinder
   module Finders
     class AStar
+      include ::Timer
+
       attr_accessor :allow_diagonal, :current_grid, :current_path
 
       def initialize(opts={})
@@ -118,8 +121,17 @@ module Pathfinder
       end
 
       def find_path_a(start_node, end_node, grid)
-        find_path(start_node, end_node, grid).map do |node|
-          node_to_a(node)
+        p = find_path(start_node, end_node, grid)
+        if p
+          p.map do |node|
+            node_to_a(node)
+          end
+        end
+      end
+
+      def find_path_a_with_time(start_node, end_node, grid)
+        result, time = time 'path time' do
+          find_path_a(start_node, end_node, grid)
         end
       end
 
