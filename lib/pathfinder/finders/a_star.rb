@@ -3,7 +3,7 @@ require 'pathfinder/heuristics/manhattan'
 module Pathfinder
   module Finders
     class AStar
-      attr_reader :allow_diagonal
+      attr_accessor :allow_diagonal, :current_grid, :current_path
 
       def initialize(opts={})
         @allow_diagonal = opts[:allow_diagonal] || false
@@ -12,18 +12,19 @@ module Pathfinder
         @weight = opts[:weight] || 1;
       end
 
-      # look at 
+      # look at
       # https://github.com/qiao/PathFinding.js/blob/master/src/finders/AStarFinder.js
       # A*
       # requires x & y
-      # node = g, f, h, x, y, opened, closed, parent
+      # node = g, f, h, x, y, opened, walkable, closed, parent
       #
       # extract a grid class
+      # clearly not optomized at all!
       def find_path(start_node, end_node, grid)
         if grid.nil?
           [start_node]
         else
-          _grid = grid.clone
+          @current_grid = grid.clone
           _max_x = grid[:max_x]
           _max_y = grid[:max_y]
 
@@ -39,18 +40,18 @@ module Pathfinder
           _start_node[:h] = nil # steps to end node
           _start_node[:opened] = true
 
+          # use heap or tree for better perf
           open = []
           open.push _start_node
 
           while open.present? do
             _current_node = open.pop
-            puts _current_node
 
             _current_node[:closed] = true
-            _grid[node_to_a(_current_node)] = _current_node
+            @current_grid[node_to_a(_current_node)] = _current_node
 
             if node_to_a(_current_node) == node_to_a(_end_node)
-              return final_path(_grid, _current_node)
+              return final_path(_current_node)
             end
 
             new_g = _current_node[:g] + 1
@@ -66,14 +67,17 @@ module Pathfinder
             neighbors << [x, y+1] if y < _max_y-1
 
             _neighbors = neighbors.map do |position|
-              _grid[position] ||=
-                {
+              node = @current_grid[position]
+              if node.nil? || node[:walkable]
+                node ||= {}
+                @current_grid[position] = node.merge({
                   x: position.first,
                   y: position.second,
                   closed: false,
                   opened: false
-                }
-            end
+                })
+              end
+            end.compact
 
             _neighbors.each do |neighbor|
               if (!neighbor[:opened] || new_g < neighbor[:g])
@@ -87,32 +91,85 @@ module Pathfinder
                   neighbor[:opened] = true
                 else
                   # ???
-                  binding.pry
+                  puts "got here some how!!!"
                 end
               end
             end
+
+            open.sort_by! {|i| [-i[:f], -i[:h]]}
+            # grid_p
           end
         end
       end
 
-      def final_path(_grid, _end_node)
+      def final_path(_end_node)
         path = [_end_node]
         _current_node = _end_node
 
         while _current_node[:parent] do
           parent_position = _current_node[:parent]
-          parent_node = _grid[parent_position]
+          parent_node = @current_grid[parent_position]
+
           path << parent_node
           _current_node = parent_node
         end
 
-        path.reverse
+        @current_path = path.reverse
       end
 
       def find_path_a(start_node, end_node, grid)
         find_path(start_node, end_node, grid).map do |node|
           node_to_a(node)
         end
+      end
+
+      def grid_from_s_map(str)
+        normalize = str.lines.reverse
+
+        max_x = normalize.map(&:length).max
+        max_y = normalize.length
+
+        y_idx = 0
+        normalize.inject({max_x: max_x, max_y: max_y}) do |grid, line|
+          line.each_char.each_with_index do |c, x_idx|
+            if c == '|'
+              grid.merge!(
+                [x_idx,y_idx] => { walkable: false}
+              )
+            end
+          end
+          y_idx += 1
+          grid
+        end
+      end
+
+      def visited_positions
+        @current_grid.select do |k,v|
+          k.is_a?(Array) && (v[:opened] || v[:closed])
+        end.map(&:second)
+      end
+
+      def grid_p
+        puts ""
+        puts "#"*80
+        s = ""
+        n = @current_grid[:max_y].to_s.size + 2
+        (-@current_grid[:max_y]..0).each do |y|
+          (0..@current_grid[:max_x]).each do |x|
+            node = @current_grid[[x,-y]]
+            if node
+              if node[:walkable].nil? || node[:walkable]
+                s << node[:f].to_s.rjust(n, " ")
+              else
+                s << "|".rjust(n, " ")
+              end
+            else
+              s << ''.rjust(n, '.')
+            end
+          end
+          s << "\n"
+        end
+        puts s
       end
 
       def node_to_a(node)
