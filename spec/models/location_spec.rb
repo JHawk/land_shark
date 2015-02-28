@@ -193,6 +193,38 @@ describe Location do
     end
   end
 
+  describe "#rand_open_position" do
+    let(:location) { FactoryGirl.create :location, max_x:max_x, max_y:max_y, max_z:1 }
+
+    subject {location.rand_open_position}
+
+    context "only one position" do
+      let(:max_x) {1}
+      let(:max_y) {1}
+
+      context "when position is not occupied" do
+        it { should eq({:x=>0, :y=>0, :z=>0}) }
+      end
+
+      context "when position is occupied by a character" do
+        let(:character) { FactoryGirl.create :character, x:0, y:0, z:0 }
+
+        before do
+          location.characters << character
+        end
+
+        it { should be_nil }
+      end
+    end
+
+    context "no positions" do
+      let(:max_x) {-1}
+      let(:max_y) {-1}
+
+      it { should be_nil }
+    end
+  end
+
   describe "#json_map" do
 
     subject { location.json_map }
@@ -215,6 +247,21 @@ describe Location do
       let(:position) { building.grid.keys.reject {|key| key.is_a? Symbol}.first }
 
       it { subject.keys.should include(position) }
+    end
+
+    context "when location has a character and a building" do
+      let(:location) { Location.generate! }
+      let(:character) { FactoryGirl.create :character }
+      let(:building) { location.buildings.first }
+
+      let(:position) { building.grid.keys.reject {|key| key.is_a? Symbol}.first }
+
+      before do
+        location.spawn([character])
+      end
+
+      it { subject.keys.should include(position) }
+      it { subject.values.should include(character) }
     end
   end
 end

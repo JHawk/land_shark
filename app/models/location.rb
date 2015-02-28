@@ -6,7 +6,7 @@ class Location < ActiveRecord::Base
   class << self
     def generate!
       self.create!.tap do |location|
-        postition = location.rand_position
+        postition = location.rand_open_position
 
         x = postition[:x]
         y = postition[:y]
@@ -27,12 +27,35 @@ class Location < ActiveRecord::Base
     end
   end
 
+  def rand_open_position
+    _json_map = json_map
+
+    _json_map.clone.each do |k, unwalkable|
+      if k.is_a?(Array) && k.size > 2
+        _json_map[k.take(2)] = unwalkable
+      end
+    end
+
+    attempts = max_x + max_y + max_z
+    attempts.times do
+      position = rand_position
+      unless _json_map[[position[:x],position[:y]]]
+        return position
+      end
+    end
+
+    puts "Could not find an open position after #{attempts} attempts!"
+    nil
+  end
+
   def rand_position
-    {
-      x: rand(max_x),
-      y: rand(max_y),
-      z: rand(max_z)
-    }
+    if max_x > 0 && max_y > 0 && max_z > 0
+      {
+        x: rand(max_x),
+        y: rand(max_y),
+        z: rand(max_z)
+      }
+    end
   end
 
   def grid
@@ -72,7 +95,7 @@ class Location < ActiveRecord::Base
   def spawn(characters)
     characters.each do |character|
       character.update_attributes!(
-        rand_position.merge(
+        rand_open_position.merge(
           {
             location_id: id
           }
@@ -86,7 +109,6 @@ class Location < ActiveRecord::Base
   end
 
   def json_map
-
     sprites_map = visible_sprites.inject({}) do |acc, sprite|
       acc[sprite.position_a] = sprite
       acc
