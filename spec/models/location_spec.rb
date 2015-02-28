@@ -3,6 +3,15 @@ require 'pathfinder/finders/a_star'
 
 describe Location do
   it { should have_many(:characters) }
+  it { should have_many(:buildings) }
+
+  describe ".generate!" do
+    subject { Location.generate! }
+
+    it { subject.buildings.should_not be_empty }
+    it { subject.buildings.first.bottom_left_x.should_not be_nil }
+    it { subject.buildings.first.bottom_left_y.should_not be_nil }
+  end
 
   describe "characters.visible" do
     subject { location.characters.visible }
@@ -181,6 +190,31 @@ describe Location do
       let(:character) { FactoryGirl.create :character, location: location }
 
       it { should_not include(character) }
+    end
+  end
+
+  describe "#json_map" do
+
+    subject { location.json_map }
+
+    context "when location has a character" do
+      let(:location) { FactoryGirl.create :location }
+      let(:character) { FactoryGirl.create :character }
+
+      before do
+        location.spawn([character])
+      end
+
+      it { subject.values.should include(character) }
+    end
+
+    context "when location has a building" do
+      let(:location) { Location.generate! }
+      let(:building) { location.buildings.first }
+
+      let(:position) { building.grid.keys.reject {|key| key.is_a? Symbol}.first }
+
+      it { subject.keys.should include(position) }
     end
   end
 end

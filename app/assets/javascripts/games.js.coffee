@@ -42,13 +42,23 @@ onMapSuccess = (response) ->
 
   character_id = -1
 
-  for sprite in response['json_map']
-    positionToSprite["#{sprite['x']}.#{sprite['y']}"] = sprite
-    character_id = sprite['id']
+  drop_z = response['json_map']
+
+  for k,v of drop_z
+    coords = for coord in k.split(',')
+      parseInt(coord.replace('[', '').replace(']', ''))
+
+    if coords.length > 2
+      drop_z["[#{coords[0]}, #{coords[1]}]"] = v
+
+      # hack
+      if v["charisma"]
+        character_id = v["id"]
 
   rows = for y in [0..max_y]
     tiles = for x in [0..max_x]
-      klass = if positionToSprite["#{x}.#{y}"]
+      # "[82, 9, 17]"
+      klass = if drop_z["[#{x}, #{y}]"]
         'present'
       else
         'nothing'

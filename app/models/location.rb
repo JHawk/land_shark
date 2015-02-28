@@ -3,6 +3,22 @@ require 'pathfinder/finders/a_star'
 class Location < ActiveRecord::Base
   include Pathfinder::Finders
 
+  class << self
+    def generate!
+      self.create!.tap do |location|
+        postition = location.rand_position
+
+        x = postition[:x]
+        y = postition[:y]
+
+        location.buildings << Building.create!(bottom_left_x:x, bottom_left_y: y)
+      end
+    end
+  end
+
+  has_many :buildings do
+  end
+
   has_many :characters do
     def visible
       where('x IS NOT NULL').
@@ -24,7 +40,6 @@ class Location < ActiveRecord::Base
   end
 
   def move!(character, position)
-
     if characters.include?(character)
 
       position_h = {
@@ -68,6 +83,19 @@ class Location < ActiveRecord::Base
 
   def visible_sprites
     characters.visible
+  end
+
+  def json_map
+
+    sprites_map = visible_sprites.inject({}) do |acc, sprite|
+      acc[sprite.position_a] = sprite
+      acc
+    end
+
+    buildings.inject(sprites_map) do |acc, building|
+      building_positions = building.grid.reject {|k,v| k.is_a? Symbol}
+      sprites_map.merge(building_positions)
+    end
   end
 end
 

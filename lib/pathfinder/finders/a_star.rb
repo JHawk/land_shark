@@ -144,7 +144,7 @@ module Pathfinder
         y_idx = 0
         normalize.inject({max_x: max_x, max_y: max_y}) do |grid, line|
           line.each_char.each_with_index do |c, x_idx|
-            if c == '|'
+            if c == '|' || c == '_'
               grid.merge!(
                 [x_idx,y_idx] => { walkable: false}
               )

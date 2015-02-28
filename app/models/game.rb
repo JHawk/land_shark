@@ -20,9 +20,7 @@ class Game < ActiveRecord::Base
   end
 
   def generate_locations!
-    location = Location.new
-    location.save!
-    self.locations << location
+    self.locations << Location.generate!
   end
 
   def current_location!
@@ -33,7 +31,7 @@ class Game < ActiveRecord::Base
 
   def json_map
     current_location || current_location!
-    current_location.visible_sprites
+    current_location.json_map
   end
 
   def max_x

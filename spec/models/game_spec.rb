@@ -19,5 +19,20 @@ describe Game do
       expect(game.locations.count).to eq(1)
     end
   end
+
+  describe "#json_map" do
+    let(:game) { FactoryGirl.create :game }
+
+    subject { game.json_map }
+
+    it 'should contain the locations visible info' do
+      game_map = subject
+
+      characters = game.current_location.characters
+
+      expect(game_map.values).to include(characters.first)
+    end
+
+  end
 end
 

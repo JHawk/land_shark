@@ -31,6 +31,30 @@ describe Pathfinder::Finders::AStar do
       it { should include(opened) }
       it { should_not include(not_visited) }
     end
+
+    describe "#grid_from_s_map" do
+      context "when | on map" do
+        subject do
+          a_star.grid_from_s_map(<<-G)
+.|.
+.|.
+          G
+        end
+
+        it { subject[[1,0]][:walkable].should be_false }
+      end
+
+      context "when _ on map" do
+        subject do
+          a_star.grid_from_s_map(<<-G)
+._.
+._.
+          G
+        end
+
+        it { subject[[1,0]][:walkable].should be_false }
+      end
+    end
   end
 
   describe "#find_path" do
