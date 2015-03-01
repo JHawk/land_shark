@@ -57,9 +57,13 @@ onMapSuccess = (response) ->
 
   rows = for y in [0..max_y]
     tiles = for x in [0..max_x]
-      # "[82, 9, 17]"
-      klass = if drop_z["[#{x}, #{y}]"]
-        'present'
+      visible = drop_z["[#{x}, #{y}]"]
+      klass = if visible
+        # hack
+        if visible["charisma"]
+          'character'
+        else
+          'unwalkable'
       else
         'nothing'
 
