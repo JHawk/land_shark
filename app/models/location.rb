@@ -59,7 +59,10 @@ class Location < ActiveRecord::Base
   end
 
   def grid
-    {max_x: max_x, max_y: max_y}
+    building_positions({
+      max_x: max_x,
+      max_y: max_y
+    })
   end
 
   def move!(character, position)
@@ -108,16 +111,20 @@ class Location < ActiveRecord::Base
     characters.visible
   end
 
+  def building_positions(init={})
+    buildings.inject(init) do |acc, building|
+      building_positions = building.grid.reject {|k,v| k.is_a? Symbol}
+      acc.merge(building_positions)
+    end
+  end
+
   def json_map
     sprites_map = visible_sprites.inject({}) do |acc, sprite|
       acc[sprite.position_a] = sprite
       acc
     end
 
-    buildings.inject(sprites_map) do |acc, building|
-      building_positions = building.grid.reject {|k,v| k.is_a? Symbol}
-      sprites_map.merge(building_positions)
-    end
+    building_positions(sprites_map)
   end
 end
 
