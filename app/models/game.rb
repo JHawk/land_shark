@@ -16,7 +16,7 @@ class Game < ActiveRecord::Base
   end
 
   def generate_characters!
-    self.characters << Character.generate!
+    self.characters << Character.generate_pc!
   end
 
   def generate_locations!

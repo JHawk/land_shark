@@ -11,6 +11,10 @@ class Location < ActiveRecord::Base
         x = postition[:x]
         y = postition[:y]
 
+        npc = Character.generate_npc!
+        location.characters << npc
+        location.spawn([npc])
+
         location.buildings << Building.create!(bottom_left_x:x, bottom_left_y: y)
       end
     end
@@ -24,6 +28,14 @@ class Location < ActiveRecord::Base
       where('x IS NOT NULL').
         where('y IS NOT NULL').
         where('z IS NOT NULL')
+    end
+
+    def pcs
+      where(is_pc: true)
+    end
+
+    def npcs
+      visible.where(is_pc: false)
     end
   end
 
@@ -66,7 +78,7 @@ class Location < ActiveRecord::Base
   end
 
   def move!(character, position)
-    if characters.include?(character)
+    if characters.pcs.include?(character)
 
       position_h = {
         x:position[0],

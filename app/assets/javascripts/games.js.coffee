@@ -52,7 +52,7 @@ onMapSuccess = (response) ->
       drop_z["[#{coords[0]}, #{coords[1]}]"] = v
 
       # hack
-      if v["charisma"]
+      if v["is_pc"]
         character_id = v["id"]
 
   rows = for y in [0..max_y]
@@ -61,7 +61,10 @@ onMapSuccess = (response) ->
       klass = if visible
         # hack
         if visible["charisma"]
-          'character'
+          if visible["is_pc"]
+            'character'
+          else
+            'npc'
         else
           'unwalkable'
       else

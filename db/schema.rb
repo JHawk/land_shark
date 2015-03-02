@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150228142234) do
+ActiveRecord::Schema.define(version: 20150301214805) do
 
   create_table "buildings", force: true do |t|
     t.string   "name"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20150228142234) do
     t.integer  "y"
     t.integer  "z"
     t.integer  "land_speed"
+    t.boolean  "is_pc"
   end
 
   add_index "characters", ["game_id"], name: "index_characters_on_game_id"

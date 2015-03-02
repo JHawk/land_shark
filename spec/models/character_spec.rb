@@ -18,6 +18,18 @@ describe Character do
     it { subject.id.should_not be_nil }
   end
 
+  describe ".generate_pc!" do
+    subject { Character.generate_pc! }
+
+    it { subject.is_pc.should be_true }
+  end
+
+  describe ".generate_npc!" do
+    subject { Character.generate_npc! }
+
+    it { subject.is_pc.should be_false }
+  end
+
   describe ".#generate_characteristics" do
     subject { Character.generate_characteristics }
 

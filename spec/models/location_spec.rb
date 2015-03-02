@@ -11,6 +11,54 @@ describe Location do
     it { subject.buildings.should_not be_empty }
     it { subject.buildings.first.bottom_left_x.should_not be_nil }
     it { subject.buildings.first.bottom_left_y.should_not be_nil }
+
+    it { subject.characters.npcs.should_not be_empty }
+  end
+
+  describe "characters.npcs" do
+    subject { location.characters.npcs }
+
+    context 'belongs to a location' do
+      let(:x) { 1 }
+      let(:y) { 1 }
+      let(:z) { 1 }
+
+      let(:location) { FactoryGirl.create :location }
+      let(:character) { FactoryGirl.create :character, location: location, x: x, y: y, z: z, is_pc: is_pc }
+
+      context 'when pc' do
+        let(:is_pc) { true }
+
+        context 'all positions present' do
+          it { should_not include(character) }
+        end
+      end
+
+      context 'when npc' do
+        let(:is_pc) { false }
+        context 'all positions present' do
+          it { should include(character) }
+        end
+
+        context 'character missing x position' do
+          let(:x) { nil }
+
+          it { should_not include(character) }
+        end
+
+        context 'character missing y position' do
+          let(:y) { nil }
+
+          it { should_not include(character) }
+        end
+
+        context 'character missing z position' do
+          let(:z) { nil }
+
+          it { should_not include(character) }
+        end
+      end
+    end
   end
 
   describe "characters.visible" do
@@ -72,9 +120,27 @@ describe Location do
   describe "#move!" do
     subject { location.move!(character, position) }
 
+    context "when character is npc" do
+      let(:location) { character.location }
+      let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: false }
+
+      context 'when character can reach the space' do
+        let(:position) { [1,1,1] }
+
+        it { should be_false }
+        it "skips the update" do
+          subject
+
+          expect(character.reload.x).to eq(2)
+          expect(character.reload.y).to eq(2)
+          expect(character.reload.z).to eq(1)
+        end
+      end
+    end
+
     context "when character is at location" do
       let(:location) { character.location }
-      let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5 }
+      let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: true }
 
       context 'when character can reach the space' do
         let(:position) { [1,1,1] }

@@ -15,8 +15,16 @@ class Character < ActiveRecord::Base
     :land_speed
 
   class << self
-    def generate!
-      self.create!(generate_characteristics)
+    def generate_pc!
+      generate!
+    end
+
+    def generate!(is_pc=true)
+      self.create!(generate_characteristics.merge({ is_pc: is_pc }))
+    end
+
+    def generate_npc!
+      generate!(false)
     end
 
     def generate_characteristics
