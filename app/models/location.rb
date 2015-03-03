@@ -24,18 +24,22 @@ class Location < ActiveRecord::Base
   end
 
   has_many :characters do
-    def visible
+    def positioned
       where('x IS NOT NULL').
         where('y IS NOT NULL').
         where('z IS NOT NULL')
     end
 
+    def visible
+      positioned
+    end
+
     def pcs
-      where(is_pc: true)
+      positioned.where(is_pc: true)
     end
 
     def npcs
-      visible.where(is_pc: false)
+      positioned.where(is_pc: false)
     end
   end
 

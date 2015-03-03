@@ -2,6 +2,7 @@ require 'faker'
 
 class Character < ActiveRecord::Base
   belongs_to :location
+  belongs_to :current_action, class_name: 'Action'
   belongs_to :game
 
   validates_presence_of :name,

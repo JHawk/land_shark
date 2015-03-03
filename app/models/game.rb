@@ -34,10 +34,12 @@ class Game < ActiveRecord::Base
     current_location.json_map
   end
 
+  # move to location json
   def max_x
     current_location.max_x
   end
 
+  # move to location json
   def max_y
     current_location.max_y
   end
