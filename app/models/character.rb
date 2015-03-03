@@ -5,6 +5,8 @@ class Character < ActiveRecord::Base
   belongs_to :current_action, class_name: 'Action'
   belongs_to :game
 
+  has_many :actions
+
   validates_presence_of :name,
     :strength,
     :dexterity,
@@ -54,6 +56,16 @@ class Character < ActiveRecord::Base
 
   def position
     {x:x,y:y,z:z}
+  end
+
+  def tick(time)
+    if current_action
+      current_action.tick time
+    end
+  end
+
+  def idle?(time)
+    current_action.nil? || current_action.finished?(time)
   end
 end
 

@@ -4,6 +4,7 @@ class Location < ActiveRecord::Base
   include Pathfinder::Finders
 
   has_one :current_character, class_name: 'Character'
+  belongs_to :game
 
   class << self
     def generate!
@@ -83,6 +84,35 @@ class Location < ActiveRecord::Base
     })
   end
 
+  TICK_TIME = 1 # seconds for now
+  # add initiative order?
+  def next_current_character(time=nil, tick_time=TICK_TIME)
+    return unless characters.pcs.present?
+
+    time ||= game.time
+    time_s = time.to_i
+
+    _characters = characters
+
+    count = 0
+    while true do
+      puts "#{(count+=1).ordinalize} time around at #{time}..."
+      _characters.each do |c|
+        if c.is_pc && c.idle?(time)
+          # pc's turn
+          return c
+        elsif c.idle?(time)
+          # npc choose action
+        else
+          c.tick(time)
+        end
+      end
+
+      time += tick_time
+    end
+    nil
+  end
+
   def move!(character, position)
     # characters other than the current character can take action before their turn
     if characters.pcs.include?(character)
@@ -98,11 +128,16 @@ class Location < ActiveRecord::Base
       if path.present?
         distance_traveled = path.length - 1
         if 0 < distance_traveled && distance_traveled <= character.land_speed
+
           character.update_attributes!({
             x: position[0],
             y: position[1],
             z: position[2]
           })
+=begin
+          character.current_action = character.available_actions.find {|a| a.type == action_type}
+          next_current_character
+=end
         else
           false
         end

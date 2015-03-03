@@ -11,13 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150303182201) do
+ActiveRecord::Schema.define(version: 20150303205443) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "finished_at"
+    t.datetime "started_at"
+    t.integer  "ticks",        default: 0, null: false
+    t.integer  "character_id"
   end
+
+  add_index "actions", ["character_id"], name: "index_actions_on_character_id"
 
   create_table "buildings", force: true do |t|
     t.string   "name"
@@ -48,7 +54,6 @@ ActiveRecord::Schema.define(version: 20150303182201) do
     t.integer  "land_speed"
     t.boolean  "is_pc"
     t.integer  "current_action_id"
-    t.datetime "action_finished_at"
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"

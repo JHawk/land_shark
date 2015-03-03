@@ -5,6 +5,7 @@ describe Location do
   it { should have_many(:characters) }
   it { should have_many(:buildings) }
   it { should have_one(:current_character) }
+  it { should belong_to(:game) }
 
   describe ".generate!" do
     subject { Location.generate! }
@@ -114,6 +115,52 @@ describe Location do
         expect(character.reload.x).not_to be_nil
         expect(character.reload.y).not_to be_nil
         expect(character.reload.z).not_to be_nil
+      end
+    end
+  end
+
+  describe "#next_current_character" do
+    let(:time) { 1.minute.ago }
+    let(:tick_time) { 1.minute }
+
+    subject { location.next_current_character(time, tick_time) }
+
+    context "when no characters present" do
+      let(:location) { FactoryGirl.create :location }
+      it { should be_nil }
+    end
+
+    context "when no pc characters present" do
+      let(:location) { character.location }
+      let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: false }
+
+      it { should be_nil }
+    end
+
+    context "when a pc character is present" do
+      let!(:location) { pc.location }
+
+      let!(:pc) { FactoryGirl.create :character_visible_at_location, x:1, y:2, z:0, land_speed:5, is_pc: true }
+
+      let!(:npc) { FactoryGirl.create :character, location_id: location.id, is_pc: false }
+
+      context "when pc character is idle" do
+        it { should eq(pc) }
+      end
+
+      context "when pc character is not idle" do
+        let(:action) { FactoryGirl.create :action, finished_at: 1.minute.from_now}
+        before do
+          pc.current_action = action
+          pc.save
+        end
+
+        it 'ticks the characters until a pc is available' do
+          result = subject
+
+          # expect(pc.position).to eq(updated)
+          expect(result).to eq(pc)
+        end
       end
     end
   end

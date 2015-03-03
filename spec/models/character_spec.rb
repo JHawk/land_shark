@@ -9,6 +9,8 @@ describe Character do
   it { should validate_presence_of(:wisdom) }
   it { should validate_presence_of(:charisma) }
 
+  it { should have_many(:actions) }
+
   it { should belong_to(:current_action) }
   it { should belong_to(:location) }
   it { should belong_to(:game) }
@@ -42,6 +44,38 @@ describe Character do
       expect(characteristics[:strength]).to be_present
       expect(characteristics[:dexterity]).to be_present
       expect(characteristics[:constitution]).to be_present
+    end
+  end
+
+  describe "#idle?" do
+    let(:character) { FactoryGirl.create :character }
+    let(:time) { 1.hour.from_now }
+
+    subject { character.idle?(time) }
+
+    before do
+      character.current_action = current_action
+      character.save
+    end
+
+    context "when no current_action" do
+      let(:current_action) { nil }
+
+      it { should be_true }
+    end
+
+    context "when current_action is present" do
+      context "when current_action is finished" do
+        let(:current_action) { FactoryGirl.create :action, finished_at: time - 1.hour }
+
+        it { should be_true }
+      end
+
+      context "when current_action is not finished" do
+        let(:current_action) { FactoryGirl.create :action, finished_at: time + 1.hour }
+
+        it { should be_false }
+      end
     end
   end
 
