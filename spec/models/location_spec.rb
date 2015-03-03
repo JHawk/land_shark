@@ -4,6 +4,7 @@ require 'pathfinder/finders/a_star'
 describe Location do
   it { should have_many(:characters) }
   it { should have_many(:buildings) }
+  it { should have_one(:current_character) }
 
   describe ".generate!" do
     subject { Location.generate! }

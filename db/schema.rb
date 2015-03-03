@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150303163436) do
+ActiveRecord::Schema.define(version: 20150303182201) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -68,9 +68,10 @@ ActiveRecord::Schema.define(version: 20150303163436) do
     t.datetime "updated_at"
     t.integer  "game_id"
     t.boolean  "is_current"
-    t.integer  "max_x",      default: 100, null: false
-    t.integer  "max_y",      default: 100, null: false
-    t.integer  "max_z",      default: 100, null: false
+    t.integer  "max_x",                default: 100, null: false
+    t.integer  "max_y",                default: 100, null: false
+    t.integer  "max_z",                default: 100, null: false
+    t.integer  "current_character_id"
   end
 
   add_index "locations", ["game_id"], name: "index_locations_on_game_id"

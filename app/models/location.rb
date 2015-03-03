@@ -3,6 +3,8 @@ require 'pathfinder/finders/a_star'
 class Location < ActiveRecord::Base
   include Pathfinder::Finders
 
+  has_one :current_character, class_name: 'Character'
+
   class << self
     def generate!
       self.create!.tap do |location|
@@ -82,6 +84,7 @@ class Location < ActiveRecord::Base
   end
 
   def move!(character, position)
+    # characters other than the current character can take action before their turn
     if characters.pcs.include?(character)
 
       position_h = {
