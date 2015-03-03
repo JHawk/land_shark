@@ -94,21 +94,27 @@ class Location < ActiveRecord::Base
 
     _characters = characters
 
-    count = 0
     while true do
-      puts "#{(count+=1).ordinalize} time around at #{time}..."
+      utc_t = Time.at(time_s).utc
+
       _characters.each do |c|
-        if c.is_pc && c.idle?(time)
-          # pc's turn
-          return c
-        elsif c.idle?(time)
-          # npc choose action
+        if c.idle?(utc_t)
+          if c.is_pc
+            # update state of game
+            game.update_attributes!(time: utc_t)
+
+            # pc's turn
+            return {pc: c, time: utc_t}
+          else
+            #c.choose_action
+
+          end
         else
-          c.tick(time)
+          c.tick(utc_t)
         end
       end
 
-      time += tick_time
+      time_s += tick_time
     end
     nil
   end

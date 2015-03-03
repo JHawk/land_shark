@@ -9,16 +9,6 @@ describe Action do
 
     subject { action.tick(time) }
 
-    context 'when finished' do
-      let(:time) { finished_at + 1.hour }
-
-      it 'should update the ticks' do
-        action = subject
-
-        expect(action.ticks).to eq(1)
-      end
-    end
-
     context 'when not finished' do
       let(:time) { finished_at - 1.hour }
 

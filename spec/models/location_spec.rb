@@ -140,12 +140,17 @@ describe Location do
     context "when a pc character is present" do
       let!(:location) { pc.location }
 
+      let(:game) { FactoryGirl.create :game }
       let!(:pc) { FactoryGirl.create :character_visible_at_location, x:1, y:2, z:0, land_speed:5, is_pc: true }
 
       let!(:npc) { FactoryGirl.create :character, location_id: location.id, is_pc: false }
 
+      before do
+        location.update_attributes!(game_id: game.id)
+      end
+
       context "when pc character is idle" do
-        it { should eq(pc) }
+        it { subject[:pc].should eq(pc) }
       end
 
       context "when pc character is not idle" do
@@ -158,8 +163,11 @@ describe Location do
         it 'ticks the characters until a pc is available' do
           result = subject
 
-          # expect(pc.position).to eq(updated)
-          expect(result).to eq(pc)
+          expect(location.game.time).to be > time
+          expect(pc.current_action.reload.ticks).to eq(3)
+          expect(pc.current_action.reload.finished?(result[:time])).to be_true
+          expect(result[:pc]).to eq(pc)
+          expect(result[:time]).to be > time
         end
       end
     end

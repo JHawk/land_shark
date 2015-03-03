@@ -19,7 +19,8 @@ ActiveRecord::Schema.define(version: 20150303205443) do
     t.datetime "updated_at"
     t.datetime "finished_at"
     t.datetime "started_at"
-    t.integer  "ticks",        default: 0, null: false
+    t.integer  "ticks",          default: 0, null: false
+    t.datetime "last_ticked_at"
     t.integer  "character_id"
   end
 
