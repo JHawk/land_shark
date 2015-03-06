@@ -98,6 +98,32 @@ describe Location do
     end
   end
 
+  describe "#moves.since" do
+    let(:npc) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: false }
+    let(:pc) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: true }
+
+    let!(:recent_pc_move) { Move.create! character: pc, game_time: game.time, start_position: '[1,2,2]', end_position: '[3,3,3]' }
+    let!(:recent_npc_move) { Move.create! character: npc, game_time: game.time, start_position: '[1,2,2]', end_position: '[3,3,3]' }
+
+    let!(:not_recent_pc_move) { Move.create! character: pc, game_time: game.time - 1.day, start_position: '[1,2,2]', end_position: '[3,3,3]' }
+    let!(:not_recent_npc_move) { Move.create! character: npc, game_time: game.time - 1.day, start_position: '[1,2,2]', end_position: '[3,3,3]' }
+
+    let(:location) { npc.location }
+    let(:game) { FactoryGirl.create :game }
+
+    before do
+      pc.location = npc.location
+      pc.save
+      location.game = game
+      location.save
+    end
+
+    subject { location.moves.since(game.time - 1.minute) }
+
+    #it { subject.count.should eq(2) }
+    #it { should eq([recent_pc_move, recent_npc_move]) }
+  end
+
   describe "#spawn" do
     let(:characters) { [ character ] }
 
@@ -163,7 +189,6 @@ describe Location do
         it 'ticks the characters until a pc is available' do
           result = subject
 
-          expect(location.game.time).to be > time
           expect(pc.current_action.reload.ticks).to eq(3)
           expect(pc.current_action.reload.finished?(result[:time])).to be_true
           expect(result[:pc]).to eq(pc)

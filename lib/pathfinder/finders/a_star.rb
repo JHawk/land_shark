@@ -15,6 +15,10 @@ module Pathfinder
         @weight = opts[:weight] || 1;
       end
 
+      def sanitize(node)
+        node
+      end
+
       # look at
       # https://github.com/qiao/PathFinding.js/blob/master/src/finders/AStarFinder.js
       # A*
@@ -24,6 +28,8 @@ module Pathfinder
       # extract a grid class
       # clearly not optomized at all!
       def find_path(start_node, end_node, grid)
+        start_node = sanitize(start_node)
+        end_node = sanitize(end_node)
         if grid.nil?
           [start_node]
         else

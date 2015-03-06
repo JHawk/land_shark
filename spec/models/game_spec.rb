@@ -24,6 +24,20 @@ describe Game do
     end
   end
 
+  describe "#recent_moves" do
+    let(:game) { FactoryGirl.create :game }
+
+    before do
+      game.current_location!
+    end
+
+    subject { game.recent_moves }
+
+    context 'no prior_action_at' do
+      it {should be_empty}
+    end
+  end
+
   describe "#json_map" do
     let(:game) { FactoryGirl.create :game }
 
@@ -37,6 +51,44 @@ describe Game do
       expect(game_map.values).to include(characters.first)
     end
 
+  end
+
+  describe "#move!" do
+    let(:game) { FactoryGirl.create :game }
+    let(:location) { game.current_location! }
+    let(:character) { location.current_character }
+
+    before do
+      location.spawn [character]
+    end
+
+    subject { game.move! character, location.rand_open_position}
+
+    context 'when character not at the location' do
+      before do
+        character.location = nil
+        character.save
+      end
+
+      it 'skips the update' do
+        start_time = game.time
+
+        subject
+
+        expect(game.reload.time).to eq(start_time)
+      end
+    end
+
+    context 'when character at the location' do
+      it 'updates the game correctly' do
+        start_time = game.time
+
+        subject
+
+        expect(game.reload.time).to be > start_time
+        expect(game.reload.prior_action_at).to eq(start_time)
+      end
+    end
   end
 end
 

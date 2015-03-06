@@ -10,6 +10,7 @@ describe Character do
   it { should validate_presence_of(:charisma) }
 
   it { should have_many(:actions) }
+  it { should have_many(:moves) }
 
   it { should belong_to(:current_action) }
   it { should belong_to(:location) }
@@ -97,7 +98,8 @@ describe Character do
   end
 
   describe "#take_step!" do
-    let(:character) { FactoryGirl.create :character, x:0, y:0, z:1, land_speed: 1, path: path }
+    let(:character) { FactoryGirl.create :character, x:0, y:0, z:1, land_speed: 1, path: path, game: game }
+    let(:game) { FactoryGirl.create :game }
 
     subject { character.take_step! }
 
@@ -109,6 +111,12 @@ describe Character do
 
         expect(character.reload.path).to eq('[[1,1,1],[2,2,2]]')
         expect(character.reload.position_a).to eq([1,1,1])
+      end
+
+      it 'creates a move' do
+        result = subject
+
+        expect(character.reload.moves).not_to be_empty
       end
     end
 

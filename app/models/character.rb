@@ -7,6 +7,7 @@ class Character < ActiveRecord::Base
   belongs_to :game
 
   has_many :actions
+  has_many :moves
 
   validates_presence_of :name,
     :strength,
@@ -73,11 +74,15 @@ class Character < ActiveRecord::Base
   end
 
   def start_action!(action_name, target_position, time)
-    position_h = {
-      x:target_position[0],
-      y:target_position[1],
-      z:target_position[2]
-    }
+    position_h = if target_position.is_a? Array 
+      {
+        x:target_position[0],
+        y:target_position[1],
+        z:target_position[2]
+      }
+                 else
+                   target_position
+                 end
 
     _path = location.find_path_a(position, position_h)
 
@@ -114,6 +119,13 @@ class Character < ActiveRecord::Base
     _remaining_path = remaining_path_a
     return if _remaining_path.blank?
     _new_position = remaining_path_a.first
+
+    Move.create!({
+      character: self,
+      game_time: game.time,
+      start_position: position_a.to_json,
+      end_position: _new_position.to_json
+    })
 
     update_attributes!(
       path: _remaining_path.to_json,

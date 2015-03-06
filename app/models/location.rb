@@ -22,6 +22,12 @@ class Location < ActiveRecord::Base
     end
   end
 
+  has_many :moves, through: :characters do
+    def since(time)
+      self #where('game_time > ?', time)
+    end
+  end
+
   has_many :buildings do
   end
 
@@ -92,11 +98,14 @@ class Location < ActiveRecord::Base
     time_s = time.to_i
 
     _characters = characters
+    slices = []
 
     _count = 0
 
     while true do
       utc_t = Time.at(time_s).utc
+
+      slices << json_map
 
       _count += 1
       raise "Out of Control" if _count > 1000
@@ -104,11 +113,11 @@ class Location < ActiveRecord::Base
       _characters.each do |c|
         if c.idle?(utc_t)
           if c.is_pc
-            # update state of game
-            game.update_attributes!(time: utc_t)
-
             # pc's turn
-            return {pc: c, time: utc_t}
+            return {
+              pc: c,
+              time: utc_t
+            }
           else
             #c.choose_action
           end
@@ -138,6 +147,12 @@ class Location < ActiveRecord::Base
 
     if characters.pcs.include?(character)
       character.start_action!(:run, position, time)
+
+      # TODO - fix when prior action at and timestamps are millis
+      characters.each do |c|
+        c.moves.delete_all
+      end
+
       next_current_character
     else
       false

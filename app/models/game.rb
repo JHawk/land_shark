@@ -8,7 +8,17 @@ class Game < ActiveRecord::Base
   after_create :set_time!, :generate_characters!, :generate_locations!
 
   def move!(character, position)
-    current_location.move!(character, position)
+    result = current_location.move!(character, position)
+    if result && result[:time]
+      update_attributes!(
+        time: result[:time],
+        prior_action_at: time
+      )
+    end
+  end
+
+  def recent_moves
+    current_location.moves.since(prior_action_at)
   end
 
   def current_location

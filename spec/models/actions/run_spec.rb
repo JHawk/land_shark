@@ -44,8 +44,9 @@ describe Actions::Run do
   end
 
   describe "#tick" do
-    let(:character) { FactoryGirl.create :character, x:0, y:0, z:1, land_speed: 1, path: "[[0,0,1],[1,1,1],[2,2,2]]" }
+    let(:character) { FactoryGirl.create :character, x:0, y:0, z:1, land_speed: 1, path: "[[0,0,1],[1,1,1],[2,2,2]]", game: game }
     let(:action) { Actions::Run.create! character: character }
+    let(:game) { FactoryGirl.create :game }
 
     let(:started_at) { Time.now }
 

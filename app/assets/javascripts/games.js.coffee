@@ -35,6 +35,13 @@ onMapSuccess = (response) ->
   lm = $('.location_map')
   lm.empty()
 
+  recent_moves = response['recent_moves']
+
+  traveled = {}
+  if recent_moves
+    for position in recent_moves
+      traveled[position['end_position']] = position['character_id']
+
   max_x = response['max_x']
   max_y = response['max_y']
 
@@ -43,6 +50,12 @@ onMapSuccess = (response) ->
   character_id = -1
 
   drop_z = response['json_map']
+
+  traveled_klass = (traveled, x, y) ->
+    if traveled["[#{x},#{y},1]"]
+      'traveled'
+    else
+      'nothing'
 
   for k,v of drop_z
     coords = for coord in k.split(',')
@@ -54,7 +67,6 @@ onMapSuccess = (response) ->
       # hack
       if v["is_pc"]
         character_id = v["id"]
-
   rows = for y in [0..max_y]
     tiles = for x in [0..max_x]
       visible = drop_z["[#{x}, #{y}]"]
@@ -67,6 +79,8 @@ onMapSuccess = (response) ->
             'npc'
         else
           'unwalkable'
+      else if Object.keys(traveled).length > 0
+        traveled_klass(traveled, x, y)
       else
         'nothing'
 
