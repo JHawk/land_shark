@@ -17,6 +17,9 @@ class Character < ActiveRecord::Base
 
     :land_speed
 
+  # speed = tile / second
+  # tile = 5 ft
+
   class << self
     def generate_pc!
       generate!
@@ -41,7 +44,7 @@ class Character < ActiveRecord::Base
         wisdom: rand_attribute,
         charisma: rand_attribute,
 
-        land_speed: rand_attribute
+        land_speed: 1
       }
     end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150303205443) do
+ActiveRecord::Schema.define(version: 20150306130218) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 20150303205443) do
     t.integer  "land_speed"
     t.boolean  "is_pc"
     t.integer  "current_action_id"
+    t.text     "path"
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"

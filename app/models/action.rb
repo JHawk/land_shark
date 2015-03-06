@@ -1,6 +1,9 @@
 class Action < ActiveRecord::Base
   belongs_to :character
 
+  validates_presence_of :started_at
+  validates_presence_of :character
+
   def tick(time)
     self.ticks += 1
     self.last_ticked_at = time
