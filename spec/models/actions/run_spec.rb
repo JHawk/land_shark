@@ -26,37 +26,28 @@ describe Actions::Run do
       )
     }
 
-    it 'sets the finished_at' do
-      result = subject
+  end
 
-      expect(result.finished_at).to eq(started_at + 2)
-      expect(result.character).to eq(character)
+  describe "#start!" do
+    let(:character) { FactoryGirl.create :character, x:0, y:0, z:1, land_speed: 1, path: "[[0,0,1],[1,1,1],[2,2,2]]" }
+    let(:action) { Actions::Run.create! character: character }
+    let(:time) { Time.zone.now }
+
+    subject { action.start!(time) }
+
+    it 'sets the finished_at' do
+      subject
+
+      expect(action.reload.started_at).to eq(time)
+      expect(action.reload.finished_at).to eq(time + 2)
     end
   end
 
   describe "#tick" do
-    let(:character) { FactoryGirl.create :character, x:0, y:0, z:1, land_speed: 1 }
-
-    let(:path) {
-      [
-        [0,0,1],
-        [1,1,1],
-        [2,2,1]
-      ]
-    }
+    let(:character) { FactoryGirl.create :character, x:0, y:0, z:1, land_speed: 1, path: "[[0,0,1],[1,1,1],[2,2,2]]" }
+    let(:action) { Actions::Run.create! character: character }
 
     let(:started_at) { Time.now }
-
-    let(:action) do
-      Actions::Run.generate!(
-        {
-          character: character,
-          ticks: 1,
-          started_at: started_at
-        },
-        path
-      )
-    end
 
     subject { action.tick(time) }
 
@@ -67,8 +58,8 @@ describe Actions::Run do
       it 'should update the ticks' do
         action = subject
 
-        expect(action.ticks).to eq(2)
-        #expect(character.position_a).to eq([1,1,1])
+        expect(action.ticks).to eq(1)
+        expect(character.reload.position_a).to eq([1,1,1])
       end
     end
   end

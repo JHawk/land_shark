@@ -1,19 +1,15 @@
 class Actions::Run < Action
   class << self
-    def generate!(params, path)
-      character = params[:character] ?
-        params[:character] :
-        Character.find(params[:character_id])
+  end
 
-      unless params[:finished_at]
-        params[:finished_at] = params[:started_at] + path.length - 1
-      end
+  def start!(time)
+    super(time)
 
-      self.create!(params)
-    end
+    self.update_attributes!(finished_at: started_at + character.remaining_path_a.length)
   end
 
   def tick(time)
+    character.take_step!
     super(time)
   end
 end

@@ -174,109 +174,40 @@ describe Location do
   end
 
   describe "#move!" do
+    let(:game) { FactoryGirl.create :game }
+
+    before do
+      location.game = game
+    end
+
     subject { location.move!(character, position) }
 
     context "when character is npc" do
       let(:location) { character.location }
       let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: false }
 
-      context 'when character can reach the space' do
-        let(:position) { [1,1,1] }
+      let(:position) { [1,1,1] }
 
-        it { should be_false }
-        it "skips the update" do
-          subject
+      it { should be_false }
 
-          expect(character.reload.x).to eq(2)
-          expect(character.reload.y).to eq(2)
-          expect(character.reload.z).to eq(1)
-        end
+      it "skips the update" do
+        subject
+
+        expect(character.reload.x).to eq(2)
+        expect(character.reload.y).to eq(2)
+        expect(character.reload.z).to eq(1)
       end
     end
 
     context "when character is at location" do
       let(:location) { character.location }
       let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: true }
+      let(:position) { [1,1,1] }
 
-      context 'when character can reach the space' do
-        let(:position) { [1,1,1] }
+      it "updates the character's position" do
+        expect(character).to receive(:start_action!)
 
-        it { should be_true }
-        it "updates the character's position" do
-          subject
-
-          expect(character.reload.x).to eq(1)
-          expect(character.reload.y).to eq(1)
-          expect(character.reload.z).to eq(1)
-        end
-      end
-
-      context 'when no path exists' do
-        let(:position) { [1,1,1] }
-
-        before do
-          Pathfinder::Finders::AStar.any_instance.should_receive(:find_path).and_return(nil)
-        end
-
-        it { should be_false }
-
-        it "skips the update" do
-          subject
-
-          expect(character.reload.x).to eq(2)
-          expect(character.reload.y).to eq(2)
-          expect(character.reload.z).to eq(1)
-        end
-      end
-
-      context 'when the path is no distance' do
-        let(:position) { [1,1,1] }
-
-        context 'path is empty' do
-          before do
-            Pathfinder::Finders::AStar.any_instance.should_receive(:find_path).and_return([])
-          end
-
-          it { should be_false }
-
-          it "skips the update" do
-            subject
-
-            expect(character.reload.x).to eq(2)
-            expect(character.reload.y).to eq(2)
-            expect(character.reload.z).to eq(1)
-          end
-        end
-
-        context "path is the character's current position" do
-          before do
-            Pathfinder::Finders::AStar.any_instance.should_receive(:find_path).and_return([character.position])
-          end
-
-          it { should be_false }
-
-          it "skips the update" do
-            subject
-
-            expect(character.reload.x).to eq(2)
-            expect(character.reload.y).to eq(2)
-            expect(character.reload.z).to eq(1)
-          end
-        end
-      end
-
-      context 'when character can not reach the space' do
-        let(:position) { [25,25,1] }
-
-        it { should be_false }
-
-        it "skips the character update" do
-          subject
-
-          expect(character.reload.x).to eq(2)
-          expect(character.reload.y).to eq(2)
-          expect(character.reload.z).to eq(1)
-        end
+        subject
       end
     end
 

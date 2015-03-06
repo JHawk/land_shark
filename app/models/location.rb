@@ -2,7 +2,6 @@ require 'pathfinder/finders/a_star'
 
 class Location < ActiveRecord::Base
   include Pathfinder::Finders
-
   has_one :current_character, class_name: 'Character'
   belongs_to :game
 
@@ -94,8 +93,13 @@ class Location < ActiveRecord::Base
 
     _characters = characters
 
+    _count = 0
+
     while true do
       utc_t = Time.at(time_s).utc
+
+      _count += 1
+      raise "Out of Control" if _count > 1000
 
       _characters.each do |c|
         if c.idle?(utc_t)
@@ -107,7 +111,6 @@ class Location < ActiveRecord::Base
             return {pc: c, time: utc_t}
           else
             #c.choose_action
-
           end
         else
           c.tick(utc_t)
@@ -119,37 +122,23 @@ class Location < ActiveRecord::Base
     nil
   end
 
+  def find_path(_start, _end)
+    AStar.new.find_path(_start, _end, grid)
+  end
+
+  def find_path_a(_start, _end)
+    find_path(_start, _end).map do |pos|
+      [pos[:x], pos[:y], (pos[:z] || 1)]
+    end
+  end
+
   def move!(character, position)
     # characters other than the current character can take action before their turn
+    time ||= game.time
+
     if characters.pcs.include?(character)
-
-      position_h = {
-        x:position[0],
-        y:position[1],
-        z:position[2]
-      }
-
-      path = AStar.new.find_path(character.position, position_h, grid)
-
-      if path.present?
-        distance_traveled = path.length - 1
-        if 0 < distance_traveled && distance_traveled <= character.land_speed
-
-          character.update_attributes!({
-            x: position[0],
-            y: position[1],
-            z: position[2]
-          })
-=begin
-          character.current_action = character.available_actions.find {|a| a.type == action_type}
-          next_current_character
-=end
-        else
-          false
-        end
-      else
-        false
-      end
+      character.start_action!(:run, position, time)
+      next_current_character
     else
       false
     end

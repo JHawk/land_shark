@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Action do
   it { should belong_to(:character) }
 
-  it { should validate_presence_of(:started_at) }
   it { should validate_presence_of(:character) }
 
   describe "#tick" do
