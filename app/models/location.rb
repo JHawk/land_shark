@@ -119,7 +119,7 @@ class Location < ActiveRecord::Base
               time: utc_t
             }
           else
-            #c.choose_action
+            c.start_action!(:run, rand_open_position, time)
           end
         else
           c.tick(utc_t)

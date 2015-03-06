@@ -74,7 +74,7 @@ class Character < ActiveRecord::Base
   end
 
   def start_action!(action_name, target_position, time)
-    position_h = if target_position.is_a? Array 
+    position_h = if target_position.is_a? Array
       {
         x:target_position[0],
         y:target_position[1],
@@ -115,6 +115,16 @@ class Character < ActiveRecord::Base
     end
   end
 
+  # WOW - hack
+  def game!
+    _game = game
+    if _game
+      _game
+    else
+      location.game
+    end
+  end
+
   def take_step!
     _remaining_path = remaining_path_a
     return if _remaining_path.blank?
@@ -122,7 +132,7 @@ class Character < ActiveRecord::Base
 
     Move.create!({
       character: self,
-      game_time: game.time,
+      game_time: game!.time,
       start_position: position_a.to_json,
       end_position: _new_position.to_json
     })
