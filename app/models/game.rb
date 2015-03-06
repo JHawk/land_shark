@@ -5,7 +5,7 @@ class Game < ActiveRecord::Base
   has_many :locations
   has_many :characters
 
-  after_create :generate_characters!, :generate_locations!
+  after_create :set_time!, :generate_characters!, :generate_locations!
 
   def move!(character, position)
     current_location.move!(character, position)
@@ -13,6 +13,11 @@ class Game < ActiveRecord::Base
 
   def current_location
     locations.where(is_current: true).first
+  end
+
+  HELLRAISER_RELEASE_DATE = 'September 18, 1987'
+  def set_time!
+    update_attributes!(time: Time.parse(HELLRAISER_RELEASE_DATE))
   end
 
   def generate_characters!

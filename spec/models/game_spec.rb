@@ -10,6 +10,10 @@ describe Game do
   describe "after_create" do
     let(:game) { FactoryGirl.create :game }
 
+    it 'will set the time' do
+      expect(game.time).not_to be_nil
+    end
+
     it 'will create a new character' do
       expect(game.characters.count).to eq(1)
       expect(game.characters.name).not_to be_nil
