@@ -5,7 +5,9 @@ Rails.application.routes.draw do
 
   resources :buildings
 
-  resources :characters
+  resources :characters do
+    get :random
+  end
 
   resources :locations
 

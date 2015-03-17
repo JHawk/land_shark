@@ -6,6 +6,14 @@ module StInheritable
     end
 
     module InstanceMethods
+      def display_name
+        self.class.
+          model_name.
+          human.
+          split(' ').
+          map(&:capitalize).
+          join(' ')
+      end
     end
 
     module ClassMethods

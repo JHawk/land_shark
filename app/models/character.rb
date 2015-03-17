@@ -7,8 +7,8 @@ class Character < ActiveRecord::Base
   belongs_to :game
   belongs_to :occupation
 
-  has_many :actions
-  has_many :moves
+  has_many :actions, dependent: :destroy
+  has_many :moves, dependent: :destroy
 
   validates_presence_of :name,
     :strength,

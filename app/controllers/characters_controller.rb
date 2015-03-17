@@ -4,6 +4,11 @@ class CharactersController < ApplicationController
 
   respond_to :html
 
+  def random
+    @character = Character.generate!
+    respond_with(@character)
+  end
+
   def index
     @characters = Character.all
     respond_with(@characters)
@@ -39,7 +44,7 @@ class CharactersController < ApplicationController
 
   private
     def set_character
-      @character = Character.find(params[:id])
+      @character = Character.find(params[:id]) if params[:id]
     end
 
     def character_params
