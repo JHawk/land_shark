@@ -10,12 +10,52 @@ class Character < ActiveRecord::Base
   has_many :actions, dependent: :destroy
   has_many :moves, dependent: :destroy
 
+  def mind_attributes
+    [
+      :perception,
+      :intelligence,
+      :sanity
+    ]
+  end
+
+  def body_attributes
+    [
+      :strength,
+      :agility,
+      :hit_points
+    ]
+  end
+
+  def spirit_attributes
+    [
+      :focus,
+      :willpower,
+      :essence
+    ]
+  end
+
+  def other_attributes
+    [
+      :charisma,
+      :land_speed,
+      :current_action
+    ]
+  end
+
   validates_presence_of :name,
-    :strength,
-    :dexterity,
-    :constitution,
+
+    :perception,
     :intelligence,
-    :wisdom,
+    :sanity,
+
+    :strength,
+    :agility,
+    :hit_points,
+
+    :focus,
+    :willpower,
+    :essence,
+
     :charisma,
 
     :land_speed
@@ -43,11 +83,18 @@ class Character < ActiveRecord::Base
       {
         name: Faker::Name.name,
 
-        strength: rand_attribute,
-        dexterity: rand_attribute,
-        constitution: rand_attribute,
+        perception: rand_attribute,
         intelligence: rand_attribute,
-        wisdom: rand_attribute,
+        sanity: rand_attribute,
+
+        strength: rand_attribute,
+        agility: rand_attribute,
+        hit_points: rand_attribute,
+
+        focus: rand_attribute,
+        willpower: rand_attribute,
+        essence: rand_attribute,
+
         charisma: rand_attribute,
 
         land_speed: 1

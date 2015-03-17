@@ -46,10 +46,11 @@ class Game < ActiveRecord::Base
     Location.st_types.each do |_type|
       _type.generate!(self)
     end
+    current_location!
   end
 
   def current_location!
-    locations.first.update_attributes!(is_current: true)
+    locations.sample.update_attributes!(is_current: true)
     current_location.spawn(characters)
     current_location.reload
   end

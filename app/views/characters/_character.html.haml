@@ -1,3 +1,52 @@
 %p
   = character.name
+%p
+  = character.occupation
+%table
+  %tr
+    %td
+      %table
+        %th
+          %strong Mind
+        - character.mind_attributes.each do |a|
+          %tr
+            %td
+              %strong
+                = a.to_s.humanize
+            %td
+              = character.send a
+    %td
+      %table
+        %th
+          %strong Body
+        - character.body_attributes.each do |a|
+          %tr
+            %td
+              %strong
+                = a.to_s.humanize
+            %td
+              = character.send a
+    %td
+      %table
+        %th
+          %strong Spirit
+        - character.spirit_attributes.each do |a|
+          %tr
+            %td
+              %strong
+                = a.to_s.humanize
+            %td
+              = character.send a
+    %td
+      %table
+        %th
+          %strong Other
+        - character.other_attributes.each do |a|
+          %tr
+            %td
+              %strong
+                = a.to_s.humanize
+            %td
+              = character.send a
+
 

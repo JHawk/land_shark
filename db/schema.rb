@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317142115) do
+ActiveRecord::Schema.define(version: 20150317172119) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -40,10 +40,10 @@ ActiveRecord::Schema.define(version: 20150317142115) do
   create_table "characters", force: true do |t|
     t.string   "name"
     t.integer  "strength"
-    t.integer  "dexterity"
-    t.integer  "constitution"
+    t.integer  "agility"
+    t.integer  "hit_points"
     t.integer  "intelligence"
-    t.integer  "wisdom"
+    t.integer  "perception"
     t.integer  "charisma"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -57,6 +57,10 @@ ActiveRecord::Schema.define(version: 20150317142115) do
     t.integer  "current_action_id"
     t.text     "path"
     t.integer  "occupation_id"
+    t.integer  "willpower"
+    t.integer  "focus"
+    t.integer  "essence"
+    t.integer  "sanity"
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"
