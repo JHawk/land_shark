@@ -6,10 +6,11 @@ class Location < ActiveRecord::Base
   belongs_to :game
 
   validates_presence_of :type
+  validates_uniqueness_of :game_id, scope: :type
 
   class << self
-    def generate!
-      self.create!.tap do |location|
+    def generate!(game=nil)
+      self.create!({game: game}).tap do |location|
         postition = location.rand_open_position
 
         x = postition[:x]
@@ -23,14 +24,23 @@ class Location < ActiveRecord::Base
       end
     end
 
-    def inherited(klass)
-      @@children ||= []
-      @@children << klass
-      super
-    end
-
     def location_types
-      @@children
+     # if subclasses.present?
+     #   subclasses
+     # else
+        dir = "./app/models/locations/*.rb"
+        Dir[Rails.root.join(dir)].map do |d|
+          begin
+            subclass_name = d.split('/').
+              last.
+              gsub('.rb', '').
+              classify
+            "Locations::#{subclass_name}".constantize
+          rescue
+            puts "Missing Location #{d}"
+          end
+        end.compact
+     # end
     end
   end
 

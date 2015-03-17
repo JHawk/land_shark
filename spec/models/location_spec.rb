@@ -11,6 +11,7 @@ describe Location do
     subject { Location.location_types }
 
     it { should_not be_empty }
+    it { subject.count.should be > 1 }
   end
 
   describe ".generate!" do
@@ -176,10 +177,6 @@ describe Location do
       let!(:pc) { FactoryGirl.create :character_visible_at_location, x:1, y:2, z:0, land_speed:5, is_pc: true }
 
       let!(:npc) { FactoryGirl.create :character, location_id: location.id, x:1, y:3, z:0, is_pc: false }
-
-      before do
-        location.update_attributes!(game_id: game.id)
-      end
 
       context "when pc character is idle" do
         it { subject[:pc].should eq(pc) }

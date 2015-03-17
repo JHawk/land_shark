@@ -34,8 +34,18 @@ class Game < ActiveRecord::Base
     self.characters << Character.generate_pc!
   end
 
+  def police_station
+    locations.where(type: Locations::PoliceStation).first
+  end
+
+  def hospital
+    locations.where(type: Locations::Hospital).first
+  end
+
   def generate_locations!
-    self.locations << Locations::Hospital.generate!
+    Location.location_types.each do |_type|
+      _type.generate!(self)
+    end
   end
 
   def current_location!

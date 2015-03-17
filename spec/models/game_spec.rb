@@ -19,8 +19,9 @@ describe Game do
       expect(game.characters.name).not_to be_nil
     end
 
-    it 'will create a new location' do
-      expect(game.locations.count).to eq(1)
+    it 'will create new locations' do
+      expect(game.hospital).not_to be_nil
+      expect(game.police_station).not_to be_nil
     end
   end
 
