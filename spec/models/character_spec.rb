@@ -22,6 +22,7 @@ describe Character do
     subject { Character.generate! }
 
     it { subject.id.should_not be_nil }
+    it { subject.occupation.should_not be_nil }
     it { subject.can? :run }
   end
 

@@ -8,7 +8,7 @@ describe Location do
   it { should belong_to(:game) }
 
   describe ".location_types" do
-    subject { Location.location_types }
+    subject { Location.st_types }
 
     it { should_not be_empty }
     it { subject.count.should be > 1 }

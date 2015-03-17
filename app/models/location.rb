@@ -1,7 +1,11 @@
 require 'pathfinder/finders/a_star'
+require 'st_inheritable'
 
 class Location < ActiveRecord::Base
+
+  include StInheritable
   include Pathfinder::Finders
+
   has_one :current_character, class_name: 'Character'
   belongs_to :game
 
@@ -22,25 +26,6 @@ class Location < ActiveRecord::Base
 
         location.buildings << Building.create!(bottom_left_x:x, bottom_left_y: y)
       end
-    end
-
-    def location_types
-     # if subclasses.present?
-     #   subclasses
-     # else
-        dir = "./app/models/locations/*.rb"
-        Dir[Rails.root.join(dir)].map do |d|
-          begin
-            subclass_name = d.split('/').
-              last.
-              gsub('.rb', '').
-              classify
-            "Locations::#{subclass_name}".constantize
-          rescue
-            puts "Missing Location #{d}"
-          end
-        end.compact
-     # end
     end
   end
 

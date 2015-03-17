@@ -43,7 +43,7 @@ class Game < ActiveRecord::Base
   end
 
   def generate_locations!
-    Location.location_types.each do |_type|
+    Location.st_types.each do |_type|
       _type.generate!(self)
     end
   end
