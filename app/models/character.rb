@@ -70,7 +70,8 @@ class Character < ActiveRecord::Base
 
     def generate!(is_pc=true)
       character = self.create!(generate_characteristics.merge({ is_pc: is_pc }))
-      character.occupation = Occupation.random.new
+
+      character.occupation = Occupation.random
       Actions::Run.create!(character: character)
       character
     end

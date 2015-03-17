@@ -1,7 +1,9 @@
-%p
-  = character.name
-%p
-  = character.occupation
+%table
+  %tr
+    %td
+      = character.occupation.try(:name).try(:capitalize)
+    %td
+      = character.name
 %table
   %tr
     %td

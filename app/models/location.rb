@@ -1,5 +1,4 @@
 require 'pathfinder/finders/a_star'
-require 'st_inheritable'
 
 class Location < ActiveRecord::Base
 

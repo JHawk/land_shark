@@ -1,4 +1,8 @@
+require 'st_inheritable'
+
 class Action < ActiveRecord::Base
+  include StInheritable
+
   belongs_to :character
 
   validates_presence_of :character

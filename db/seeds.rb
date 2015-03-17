@@ -8,3 +8,9 @@
 
 test_user = User.create!(email: 'test@test.com', password: 'password', password_confirmation: 'password')
 
+%w(
+  doctor
+  detective
+).each do |occupation_name|
+  Occupation.where(:name => occupation_name).first_or_create
+end

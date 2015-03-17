@@ -1,15 +1,11 @@
-require 'st_inheritable'
-
 class Occupation < ActiveRecord::Base
-  include StInheritable
 
+  validates_presence_of :name
   has_many :characters
-
-  validates_presence_of :type
 
   class << self
     def random
-      Occupation.st_types.sample
+      Occupation.all.sample
     end
   end
 end
