@@ -5,6 +5,7 @@ class Character < ActiveRecord::Base
   belongs_to :location
   belongs_to :current_action, class_name: 'Action'
   belongs_to :game
+  belongs_to :occupation
 
   has_many :actions
   has_many :moves

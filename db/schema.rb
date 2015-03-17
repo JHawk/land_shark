@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150306182950) do
+ActiveRecord::Schema.define(version: 20150317124455) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20150306182950) do
     t.boolean  "is_pc"
     t.integer  "current_action_id"
     t.text     "path"
+    t.integer  "occupation_id"
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"
@@ -80,6 +81,7 @@ ActiveRecord::Schema.define(version: 20150306182950) do
     t.integer  "max_y",                default: 100, null: false
     t.integer  "max_z",                default: 100, null: false
     t.integer  "current_character_id"
+    t.string   "type"
   end
 
   add_index "locations", ["game_id"], name: "index_locations_on_game_id"
@@ -94,6 +96,12 @@ ActiveRecord::Schema.define(version: 20150306182950) do
   end
 
   add_index "moves", ["character_id"], name: "index_moves_on_character_id"
+
+  create_table "occupations", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

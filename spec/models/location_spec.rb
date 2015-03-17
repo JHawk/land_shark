@@ -7,8 +7,14 @@ describe Location do
   it { should have_one(:current_character) }
   it { should belong_to(:game) }
 
+  describe ".location_types" do
+    subject { Location.location_types }
+
+    it { should_not be_empty }
+  end
+
   describe ".generate!" do
-    subject { Location.generate! }
+    subject { Locations::Hospital.generate! }
 
     it { subject.buildings.should_not be_empty }
     it { subject.buildings.first.bottom_left_x.should_not be_nil }
@@ -136,7 +142,7 @@ describe Location do
       it 'places the character' do
         subject
 
-        expect(character.reload.location).to eq(location)
+        expect(character.reload.location).to eq(Locations::Hospital.first)
 
         expect(character.reload.x).not_to be_nil
         expect(character.reload.y).not_to be_nil
@@ -169,7 +175,7 @@ describe Location do
       let(:game) { FactoryGirl.create :game }
       let!(:pc) { FactoryGirl.create :character_visible_at_location, x:1, y:2, z:0, land_speed:5, is_pc: true }
 
-      let!(:npc) { FactoryGirl.create :character, location_id: location.id, is_pc: false }
+      let!(:npc) { FactoryGirl.create :character, location_id: location.id, x:1, y:3, z:0, is_pc: false }
 
       before do
         location.update_attributes!(game_id: game.id)
@@ -319,7 +325,7 @@ describe Location do
     end
 
     context "when location has a building" do
-      let(:location) { Location.generate! }
+      let(:location) { Locations::Hospital.generate! }
       let(:building) { location.buildings.first }
 
       let(:position) { building.grid.keys.reject {|key| key.is_a? Symbol}.first }
@@ -328,7 +334,7 @@ describe Location do
     end
 
     context "when location has a character and a building" do
-      let(:location) { Location.generate! }
+      let(:location) { Locations::Hospital.generate! }
       let(:character) { FactoryGirl.create :character }
       let(:building) { location.buildings.first }
 

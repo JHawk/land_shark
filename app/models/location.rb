@@ -5,6 +5,8 @@ class Location < ActiveRecord::Base
   has_one :current_character, class_name: 'Character'
   belongs_to :game
 
+  validates_presence_of :type
+
   class << self
     def generate!
       self.create!.tap do |location|
@@ -19,6 +21,16 @@ class Location < ActiveRecord::Base
 
         location.buildings << Building.create!(bottom_left_x:x, bottom_left_y: y)
       end
+    end
+
+    def inherited(klass)
+      @@children ||= []
+      @@children << klass
+      super
+    end
+
+    def location_types
+      @@children
     end
   end
 

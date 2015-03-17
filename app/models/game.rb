@@ -35,7 +35,7 @@ class Game < ActiveRecord::Base
   end
 
   def generate_locations!
-    self.locations << Location.generate!
+    self.locations << Locations::Hospital.generate!
   end
 
   def current_location!
