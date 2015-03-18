@@ -38,8 +38,8 @@ describe Actions::Run do
     it 'sets the finished_at' do
       subject
 
-      expect(action.reload.started_at).to eq(time)
-      expect(action.reload.finished_at).to eq(time + 2)
+      expect(action.reload.started_at.to_i).to eq(time.to_i)
+      expect(action.reload.finished_at.to_i).to eq((time + 2).to_i)
     end
   end
 
