@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :character do
+  factory :character, class: Characters::Human do
     name { Faker::Name.name }
 
     agility { rand(20) + 1 }
@@ -24,6 +24,8 @@ FactoryGirl.define do
       y { rand(100) }
       z { rand(100) }
     end
+
+    type { 'Characters::Human' }
   end
 end
 

@@ -1,3 +1,4 @@
+require 'st_inheritable'
 require 'pathfinder/finders/a_star'
 
 class Location < ActiveRecord::Base
@@ -19,7 +20,7 @@ class Location < ActiveRecord::Base
         x = postition[:x]
         y = postition[:y]
 
-        npc = Character.generate_npc!
+        npc = Characters::Human.generate_npc!
         location.characters << npc
         location.spawn([npc])
 

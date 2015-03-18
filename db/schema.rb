@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317213241) do
+ActiveRecord::Schema.define(version: 20150318195746) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -61,6 +61,8 @@ ActiveRecord::Schema.define(version: 20150317213241) do
     t.integer  "focus"
     t.integer  "essence"
     t.integer  "sanity"
+    t.string   "type"
+    t.string   "gender",            default: "none", null: false
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"

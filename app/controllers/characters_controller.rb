@@ -5,7 +5,7 @@ class CharactersController < ApplicationController
   respond_to :html
 
   def random
-    @character = Character.generate!
+    @character = Characters::Human.generate!
     respond_with(@character)
   end
 

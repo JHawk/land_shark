@@ -1,6 +1,9 @@
 require 'faker'
+require 'st_inheritable'
 
 class Character < ActiveRecord::Base
+
+  include StInheritable
 
   belongs_to :location
   belongs_to :current_action, class_name: 'Action'
@@ -42,6 +45,9 @@ class Character < ActiveRecord::Base
     ]
   end
 
+  validates_presence_of :type
+  validates :gender, inclusion: { in: %w(male female none) }
+
   validates_presence_of :name,
 
     :perception,
@@ -80,10 +86,12 @@ class Character < ActiveRecord::Base
       generate!(false)
     end
 
+    def rand_identity
+      raise NotImplementedError, "Must be implemented in subclass"
+    end
+
     def generate_characteristics
       {
-        name: Faker::Name.name,
-
         perception: rand_attribute,
         intelligence: rand_attribute,
         sanity: rand_attribute,
@@ -99,7 +107,7 @@ class Character < ActiveRecord::Base
         charisma: rand_attribute,
 
         land_speed: 1
-      }
+      }.merge(rand_identity)
     end
 
     def rand_attribute

@@ -1,9 +1,14 @@
 %table
   %tr
     %td
-      = character.occupation.try(:name).try(:capitalize)
+      %strong
+        = character.display_name
     %td
-      = character.name
+      %strong
+        = character.occupation.try(:name).try(:capitalize)
+    %td
+      %strong
+        = character.name
 %table
   %tr
     %td

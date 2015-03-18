@@ -29,7 +29,7 @@ describe Character do
   it { should belong_to(:game) }
 
   describe ".generate!" do
-    subject { Character.generate! }
+    subject { Characters::Human.generate! }
 
     it { subject.id.should_not be_nil }
     it { subject.occupation.should_not be_nil }
@@ -37,19 +37,19 @@ describe Character do
   end
 
   describe ".generate_pc!" do
-    subject { Character.generate_pc! }
+    subject { Characters::Human.generate_pc! }
 
     it { subject.is_pc.should be_true }
   end
 
   describe ".generate_npc!" do
-    subject { Character.generate_npc! }
+    subject { Characters::Human.generate_npc! }
 
     it { subject.is_pc.should be_false }
   end
 
   describe ".#generate_characteristics" do
-    subject { Character.generate_characteristics }
+    subject { Characters::Human.generate_characteristics }
 
     it 'will generate attributes' do
       characteristics = subject

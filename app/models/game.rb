@@ -31,7 +31,7 @@ class Game < ActiveRecord::Base
   end
 
   def generate_characters!
-    self.characters << Character.generate_pc!
+    self.characters << Characters::Human.generate_pc!
   end
 
   def police_station
