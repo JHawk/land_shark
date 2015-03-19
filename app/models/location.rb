@@ -149,7 +149,7 @@ class Location < ActiveRecord::Base
   end
 
   def move!(character, position)
-    #binding.pry 
+    #binding.pry
 
     # characters other than the current character can take action before their turn
     time ||= game.time
@@ -191,13 +191,25 @@ class Location < ActiveRecord::Base
     end
   end
 
+  def current_character!
+    if current_character_id.present?
+      Character.find current_character_id
+    else
+      c = characters.pcs.sample
+      if c.present?
+        self.update_attributes!(current_character_id: c.id)
+      end
+      c
+    end
+  end
+
   def json_map
     sprites_map = visible_sprites.inject({}) do |acc, sprite|
       acc[sprite.position_a] = sprite
       acc
     end
 
-    building_positions(sprites_map)
+    building_positions(sprites_map).merge({current_character: current_character!})
   end
 end
 

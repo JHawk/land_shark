@@ -70,7 +70,6 @@ class Game < ActiveRecord::Base
   end
 
   def json_map
-    current_location || current_location!
     current_location.json_map
   end
 

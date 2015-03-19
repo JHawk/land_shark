@@ -26,6 +26,15 @@ FactoryGirl.define do
     end
 
     type { 'Characters::Human' }
+
+    factory :pc do
+      is_pc { true }
+    end
+
+    factory :npc do
+      is_pc { false }
+    end
   end
+
 end
 

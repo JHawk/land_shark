@@ -2,6 +2,8 @@
   = @game.time
 
 - if @game.current_location
+  %strong
+    = @game.current_location.display_name
   = form_for(@game.current_location.becomes(Location)) do |f|
     = f.hidden_field :is_current, value: false
     = f.submit "Leave Location"

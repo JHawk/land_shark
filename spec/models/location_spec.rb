@@ -306,6 +306,70 @@ describe Location do
     end
   end
 
+  describe "#current_character!" do
+    let(:location) { FactoryGirl.create :location }
+
+    subject { location.current_character! }
+
+    context "when location has no pcs" do
+      it { should be_nil }
+    end
+
+    context "when the location has characters" do
+      let(:pcs) { [ ] }
+      let(:npcs) { [ ] }
+
+      before do
+        location.spawn pcs
+        location.spawn npcs
+      end
+
+      context "when the location has a current character" do
+        let(:current_character) { FactoryGirl.create :pc }
+
+        let(:pcs) do
+          [
+            FactoryGirl.create(:pc),
+            current_character,
+            FactoryGirl.create(:pc)
+          ]
+        end
+
+        before do
+          location.update_attributes!(current_character_id: current_character.id)
+        end
+
+        it { should eq(current_character) }
+
+        it 'does not update the current character' do
+          subject
+
+          expect(location.reload.current_character_id).to eq(current_character.id)
+        end
+      end
+
+      context "when the location has no current character" do
+        context "when location has one pcs" do
+          let(:pcs) { [ FactoryGirl.create(:pc) ] }
+
+          it { should eq(pcs.first) }
+
+          it 'updates the current character' do
+            subject
+
+            expect(location.reload.current_character_id).to eq(pcs.first.id)
+          end
+        end
+
+        context "when location has one npc" do
+          let(:npcs) { [ FactoryGirl.create(:npc) ] }
+
+          it { should be_nil }
+        end
+      end
+    end
+  end
+
   describe "#json_map" do
 
     subject { location.json_map }
