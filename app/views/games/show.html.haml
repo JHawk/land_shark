@@ -1,4 +1,10 @@
+%strong
+  = @game.time
+
 - if @game.current_location
+  = form_for(@game.current_location.becomes(Location)) do |f|
+    = f.hidden_field :is_current, value: false
+    = f.submit "Leave Location"
   %p
     PCS
   - @game.current_location.characters.pcs.each do |c|
@@ -10,6 +16,15 @@
 
   .location_map{:data => {'game-id' => @game.id}}
 - else
+  %h1 Locations
   - @game.locations.each do |l|
     = render 'locations/location', location: l
+
+  %h1 Available Characters
+  - @game.characters.available.pcs.each do |c|
+    = render 'characters/character', character: c
+    = form_for(c.becomes(Character)) do |f|
+      - # = f.text_field :name
+      = f.select :location_id, @game.locations.collect {|p| [ p.display_name, p.id ] }, { include_blank: true }
+      = f.submit
 

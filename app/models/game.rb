@@ -3,7 +3,20 @@ class Game < ActiveRecord::Base
   validates_presence_of :user
 
   has_many :locations
-  has_many :characters
+
+  has_many :characters do
+    def available
+      where('location_id IS NULL')
+    end
+
+    def pcs
+      where(is_pc: true)
+    end
+
+    def npcs
+      where(is_pc: false)
+    end
+  end
 
   after_create :set_time!, :generate_characters!, :generate_locations!
 
@@ -31,7 +44,9 @@ class Game < ActiveRecord::Base
   end
 
   def generate_characters!
-    self.characters << Characters::Human.generate_pc!
+    4.times do
+      self.characters << Characters::Human.generate_pc!
+    end
   end
 
   def police_station
@@ -46,9 +61,6 @@ class Game < ActiveRecord::Base
     Location.st_types.each do |_type|
       _type.generate!(self)
     end
-
-    current_location!
-
   end
 
   def current_location!

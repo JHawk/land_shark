@@ -28,8 +28,12 @@ class LocationsController < ApplicationController
   end
 
   def update
+    if location_params.fetch(:is_current)
+      @location.game.locations.update_all(is_current: false)
+    end
+
     @location.update(location_params)
-    respond_with(@location)
+    respond_with(@location.game)
   end
 
   def destroy
@@ -38,11 +42,13 @@ class LocationsController < ApplicationController
   end
 
   private
-    def set_location
-      @location = Location.find(params[:id])
-    end
 
-    def location_params
-      params[:location]
-    end
+  def set_location
+    @location = Location.find(params[:id])
+  end
+
+  def location_params
+    params.require(:location).permit(:is_current)
+  end
 end
+

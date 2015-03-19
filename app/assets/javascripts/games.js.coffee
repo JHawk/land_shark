@@ -28,8 +28,15 @@ moveTo = (x,y,z,character_id) ->
 game_id = () ->
   $('.location_map').data('game-id')
 
-$(document).ready -> if $('.location_map').length > 0
-                       fetchMap()
+$(document).ready -> 
+  if $('.location_map').length > 0
+    fetchMap()
+  else
+    selectorStuff()
+
+selectorStuff = () ->
+  $('select').change (e) ->
+    i = 1
 
 onMapSuccess = (response) ->
   lm = $('.location_map')

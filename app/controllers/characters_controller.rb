@@ -33,8 +33,16 @@ class CharactersController < ApplicationController
   end
 
   def update
-    @character.update(character_params)
-    respond_with(@character)
+    _params = character_params
+    _location_id = _params.delete(:location_id)
+
+    if _location_id.present?
+      location = Location.find _location_id
+      location.spawn([@character])
+    end
+
+    @character.update(_params)
+    respond_with(@character.becomes(Character).game)
   end
 
   def destroy
@@ -43,11 +51,13 @@ class CharactersController < ApplicationController
   end
 
   private
-    def set_character
-      @character = Character.find(params[:id]) if params[:id]
-    end
 
-    def character_params
-      params.require(:character).permit(:name, :strength, :dexterity, :constitution, :intelligence, :wisdom, :charisma)
-    end
+  def set_character
+    @character = Character.find(params[:id]) if params[:id]
+  end
+
+  def character_params
+    params.require(:character).permit(:location_id)
+  end
 end
+

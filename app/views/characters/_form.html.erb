@@ -1,3 +1,5 @@
+<% @character ||= character %>
+
 <%= form_for(@character) do |f| %>
   <% if @character.errors.any? %>
     <div id="error_explanation">
@@ -12,30 +14,6 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :strength %><br>
-    <%= f.number_field :strength %>
-  </div>
-  <div class="field">
-    <%= f.label :dexterity %><br>
-    <%= f.number_field :dexterity %>
-  </div>
-  <div class="field">
-    <%= f.label :constitution %><br>
-    <%= f.number_field :constitution %>
-  </div>
-  <div class="field">
-    <%= f.label :intelligence %><br>
-    <%= f.number_field :intelligence %>
-  </div>
-  <div class="field">
-    <%= f.label :wisdom %><br>
-    <%= f.number_field :wisdom %>
-  </div>
-  <div class="field">
     <%= f.label :charisma %><br>
     <%= f.number_field :charisma %>
   </div>
@@ -43,3 +21,5 @@
     <%= f.submit %>
   </div>
 <% end %>
+<% # = select(c, "location_id", @game.locations.collect {|p| [ p.display_name, p.id ] }, { include_blank: true }) %>
+

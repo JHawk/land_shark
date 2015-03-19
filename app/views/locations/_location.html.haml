@@ -3,12 +3,15 @@
     %td
       %strong
         = location.display_name
-    %td
-      %strong
-        = character.occupation.try(:name).try(:capitalize)
-    %td
-      %strong
-        = character.name
-    %td
-      = character.gender.capitalize
+
+%table
+  %tr
+    - location.characters.pcs.each do |c|
+      %td
+        = "#{c.occupation.try(:name).try(:capitalize)} #{c.name} | "
+    - if location.characters.pcs.present?
+      %td
+        = form_for(location.becomes(Location)) do |f|
+          = f.hidden_field :is_current, value: true
+          = f.submit "Investigate"
 

@@ -149,6 +149,8 @@ class Location < ActiveRecord::Base
   end
 
   def move!(character, position)
+    #binding.pry 
+
     # characters other than the current character can take action before their turn
     time ||= game.time
 
