@@ -28,7 +28,7 @@ moveTo = (x,y,z,character_id) ->
 game_id = () ->
   $('.location_map').data('game-id')
 
-$(document).ready -> 
+$(document).ready ->
   if $('.location_map').length > 0
     fetchMap()
   else
@@ -54,7 +54,7 @@ onMapSuccess = (response) ->
 
   positionToSprite = {}
 
-  character_id = -1
+  character_id = response['json_map']['current_character']['id']
 
   drop_z = response['json_map']
 
@@ -71,17 +71,19 @@ onMapSuccess = (response) ->
     if coords.length > 2
       drop_z["[#{coords[0]}, #{coords[1]}]"] = v
 
-      # hack
-      if v["is_pc"]
-        character_id = v["id"]
   rows = for y in [0..max_y]
     tiles = for x in [0..max_x]
-      visible = drop_z["[#{x}, #{y}]"]
+      current_character = response['json_map']['current_character']
+      coord = "[#{x}, #{y}]"
+      visible = drop_z[coord]
       klass = if visible
         # hack
         if visible["charisma"]
           if visible["is_pc"]
-            'character'
+            if current_character['x'] == x && current_character['y'] == y
+              'current_character'
+            else
+              'character'
           else
             'npc'
         else

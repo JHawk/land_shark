@@ -206,6 +206,7 @@ describe Location do
 
     before do
       location.game = game
+      location.update_attributes!(current_character: character)
     end
 
     subject { location.move!(character, position) }

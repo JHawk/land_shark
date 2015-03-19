@@ -148,10 +148,13 @@ class Location < ActiveRecord::Base
   end
 
   def move!(character, position)
-    #binding.pry
-
     # characters other than the current character can take action before their turn
     time ||= game.time
+
+    if character.id != current_character_id
+      # TODO - prevent this fo' real some time
+      puts "#{character.id}) It is not #{character.name}'s turn!"
+    end
 
     if characters.pcs.include?(character)
       character.start_action!(:run, position, time)
@@ -161,7 +164,13 @@ class Location < ActiveRecord::Base
         c.moves.delete_all
       end
 
-      next_current_character
+      nextone = next_current_character
+
+      if nextone[:pc]
+        self.update_attributes!(current_character_id: nextone[:pc].id)
+      end
+
+      nextone
     else
       false
     end

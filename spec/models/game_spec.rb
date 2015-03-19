@@ -67,13 +67,13 @@ describe Game do
       location.spawn [character]
     end
 
-    subject { game.move! character, location.rand_open_position}
-
     context 'when character not at the location' do
       before do
         character.location = nil
         character.save
       end
+
+      subject { game.move! character, location.rand_open_position}
 
       it 'skips the update' do
         start_time = game.time
@@ -88,7 +88,9 @@ describe Game do
       it 'updates the game correctly' do
         start_time = game.time
 
-        subject
+        location.characters.pcs.each do |c|
+          game.move! c, location.rand_open_position
+        end
 
         expect(game.reload.time.to_i).to be > start_time.to_i
         expect(game.reload.prior_action_at).to eq(start_time)
