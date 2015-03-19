@@ -10,7 +10,6 @@ class Location < ActiveRecord::Base
   belongs_to :game
 
   validates_presence_of :type
-  validates_uniqueness_of :game_id, scope: :type
 
   class << self
     def generate!(game=nil)

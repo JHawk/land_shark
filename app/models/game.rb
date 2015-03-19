@@ -70,7 +70,11 @@ class Game < ActiveRecord::Base
   end
 
   def json_map
-    current_location.json_map
+    if current_location
+      current_location.json_map
+    else
+      {}
+    end
   end
 
   # move to location json

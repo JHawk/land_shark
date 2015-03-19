@@ -42,6 +42,10 @@ describe Game do
   describe "#json_map" do
     let(:game) { FactoryGirl.create :game }
 
+    before do
+      game.current_location!
+    end
+
     subject { game.json_map }
 
     it 'should contain the locations visible info' do

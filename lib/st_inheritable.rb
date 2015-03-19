@@ -6,6 +6,10 @@ module StInheritable
     end
 
     module InstanceMethods
+      def real_self
+        self.becomes(self.type.constantize)
+      end
+
       def display_name
         self.class.
           model_name.

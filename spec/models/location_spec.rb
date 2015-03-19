@@ -228,8 +228,10 @@ describe Location do
     end
 
     context "when character is at location" do
-      let(:location) { character.location }
-      let(:character) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: true }
+      let(:location) { FactoryGirl.create :location }
+
+      let(:character) { FactoryGirl.create :pc, x:2, y:2, z:1, land_speed:5, location_id: location.id }
+
       let(:position) { [1,1,1] }
 
       it "updates the character's position" do
