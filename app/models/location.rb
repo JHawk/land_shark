@@ -217,7 +217,15 @@ class Location < ActiveRecord::Base
       acc
     end
 
-    building_positions(sprites_map).merge({current_character: current_character!})
+    cc = current_character!
+
+    cc_response = cc.present? ?
+      {
+        current_character: cc,
+        current_actions: cc.actions.map {|a| {action: a,name: a.display_name}}
+      } : {}
+
+    building_positions(sprites_map).merge(cc_response)
   end
 end
 

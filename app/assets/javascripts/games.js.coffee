@@ -54,8 +54,13 @@ onMapSuccess = (response) ->
 
   positionToSprite = {}
 
-  character_id = response['json_map']['current_character']['id']
+  current_char = response['json_map']['current_character']
+  character_id = current_char['id']
+  character_name = current_char['name']
+  action_tds = for action in response['json_map']['current_actions']
+    "<td>#{action['name']}</td>"
 
+  actions = "<tr><td>Current Character : #{character_name}</td></tr><tr>#{action_tds}</tr>"
   drop_z = response['json_map']
 
   traveled_klass = (traveled, x, y) ->
@@ -96,7 +101,7 @@ onMapSuccess = (response) ->
       "<td class='#{klass}' data-x='#{x}' data-y='#{y}'></td>"
     "<tr>#{tiles.join('')}</tr>"
 
-  lm.html("<table>#{rows}</table>")
+  lm.html("<table>#{actions}</table><table>#{rows}</table>")
 
   $('.location_map td').click (e) ->
     cell_x = $(this).data('x')
