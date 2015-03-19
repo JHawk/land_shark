@@ -15,7 +15,7 @@ describe Game do
     end
 
     it 'will create a new character' do
-      expect(game.characters.count).to eq(1)
+      expect(game.characters.count).to be > 1
       expect(game.characters.name).not_to be_nil
     end
 
@@ -86,7 +86,7 @@ describe Game do
 
         subject
 
-        expect(game.reload.time).to be > start_time
+        expect(game.reload.time.to_i).to be > start_time.to_i
         expect(game.reload.prior_action_at).to eq(start_time)
       end
     end
