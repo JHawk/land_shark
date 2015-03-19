@@ -1,13 +1,15 @@
-%p
-  PCS
-- @game.current_location.characters.pcs.each do |c|
-  = render 'characters/character', character: c
-%p
-  NPCS
-- @game.current_location.characters.npcs.each do |c|
-  = render 'characters/character', character: c
+- if @game.current_location
+  %p
+    PCS
+  - @game.current_location.characters.pcs.each do |c|
+    = render 'characters/character', character: c
+  %p
+    NPCS
+  - @game.current_location.characters.npcs.each do |c|
+    = render 'characters/character', character: c
 
-.location_map{:data => {'game-id' => @game.id}}
+  .location_map{:data => {'game-id' => @game.id}}
+- else
+  - @game.locations.each do |l|
+    = render 'locations/location', location: l
 
-= link_to 'Edit', edit_game_path(@game)
-= link_to 'Back', games_path

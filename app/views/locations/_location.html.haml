@@ -1,0 +1,14 @@
+%table
+  %tr
+    %td
+      %strong
+        = location.display_name
+    %td
+      %strong
+        = character.occupation.try(:name).try(:capitalize)
+    %td
+      %strong
+        = character.name
+    %td
+      = character.gender.capitalize
+

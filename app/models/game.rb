@@ -46,7 +46,9 @@ class Game < ActiveRecord::Base
     Location.st_types.each do |_type|
       _type.generate!(self)
     end
+
     current_location!
+
   end
 
   def current_location!
