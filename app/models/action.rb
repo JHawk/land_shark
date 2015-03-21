@@ -7,15 +7,15 @@ class Action < ActiveRecord::Base
 
   validates_presence_of :character
 
+  def start!(time)
+    self.update_attributes!(started_at: time)
+  end
+
   def tick(time)
     self.ticks += 1
     self.last_ticked_at = time
     self.save
     self
-  end
-
-  def start!(time)
-    self.update_attributes!(started_at: time)
   end
 
   # use last ticked at instead of passing around the time

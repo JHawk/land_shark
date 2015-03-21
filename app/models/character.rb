@@ -13,6 +13,9 @@ class Character < ActiveRecord::Base
   has_many :actions, dependent: :destroy
   has_many :moves, dependent: :destroy
 
+  has_many :items
+  belongs_to :equipped_item
+
   def mind_attributes
     [
       :perception,
@@ -79,6 +82,7 @@ class Character < ActiveRecord::Base
       character.occupation = Occupation.random
       Actions::Run.create!(character: character)
       Actions::HunkerDown.create!(character: character)
+      Actions::Throw.create!(character: character)
       character
     end
 
@@ -121,7 +125,7 @@ class Character < ActiveRecord::Base
     end
   end
 
-  def can? action_name
+  def can?(action_name, target=nil)
     !!action_by_type(action_name)
   end
 
@@ -150,7 +154,10 @@ class Character < ActiveRecord::Base
       })
       selected_action = action_by_type(action_name)
       if selected_action
-        self.update_attributes!(current_action_id: selected_action.id)
+        self.update_attributes!(
+          current_action_id: selected_action.id
+        )
+
         selected_action.start!(time)
       else
         false

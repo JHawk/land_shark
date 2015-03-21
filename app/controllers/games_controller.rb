@@ -34,9 +34,14 @@ class GamesController < ApplicationController
   def update
     character = Character.find params['character_id']
 
-    if character.can? params['game_action']
+    tci = params['target_character_id']
+    if tci && Character.find(tci)
+      character.target_character_id = params['target_character_id']
+      character.save!
+    end
+
+    if character.can?(params['game_action'])
       position = [params['x'], params['y'], params['z']].map(&:to_i)
-      # TODO rename move! => take_action!
       @game.move!(character, position, params['game_action'])
     else
       raise "#{character.name} can't #{params['game_action']}!"

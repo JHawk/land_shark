@@ -16,6 +16,13 @@
       = character.current_action.try(:display_name)
     %td
       = character.current_action.try(:finished_at)
+  %tr
+    %td
+      %strong
+        Equipped
+    %td
+      = character.equipped_item_id ? Item.find(character.equipped_item_id).name : ''
+
 %table
   %tr
     %td
@@ -62,4 +69,16 @@
                 = a.to_s.humanize
             %td
               = character.send a
+    %td
+      %table
+        %th
+          %strong Items
+        - character.items.each do |i|
+          %tr
+            %td
+              %strong
+                = i.name
+            %td
+              = i.damage
+
 

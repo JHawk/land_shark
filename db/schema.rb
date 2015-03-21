@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150319153641) do
+ActiveRecord::Schema.define(version: 20150321161832) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -62,7 +62,9 @@ ActiveRecord::Schema.define(version: 20150319153641) do
     t.integer  "essence"
     t.integer  "sanity"
     t.string   "type"
-    t.string   "gender",            default: "none", null: false
+    t.string   "gender",              default: "none", null: false
+    t.integer  "target_character_id"
+    t.integer  "equipped_item_id"
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"
@@ -82,6 +84,8 @@ ActiveRecord::Schema.define(version: 20150319153641) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "character_id"
+    t.integer  "damage"
   end
 
   create_table "locations", force: true do |t|
