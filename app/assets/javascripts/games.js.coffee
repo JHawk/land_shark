@@ -9,12 +9,16 @@ fetchMap = () ->
     type: "GET"
         )
 
+action_buttons = () -> $('.location_map #actions td')
+selected_action = () ->
+  $('.location_map #actions td.selected').text().toLowerCase().replace(' ', '_')
+
 moveTo = (x,y,z,character_id) ->
   id = game_id()
   $.ajax(
     url: "/games/#{id}"
     data:
-      game_action: 'move'
+      game_action: selected_action()
       character_id: character_id
       id: id
       x: x
@@ -57,10 +61,12 @@ onMapSuccess = (response) ->
   current_char = response['json_map']['current_character']
   character_id = current_char['id']
   character_name = current_char['name']
+
   action_tds = for action in response['json_map']['current_actions']
     "<td>#{action['name']}</td>"
 
-  actions = "<tr><td>Current Character : #{character_name}</td></tr><tr>#{action_tds}</tr>"
+
+  actions = "<tr><td>Current Character : #{character_name}</td></tr><tr id='actions'>#{action_tds}</tr>"
   drop_z = response['json_map']
 
   traveled_klass = (traveled, x, y) ->
@@ -101,9 +107,14 @@ onMapSuccess = (response) ->
       "<td class='#{klass}' data-x='#{x}' data-y='#{y}'></td>"
     "<tr>#{tiles.join('')}</tr>"
 
-  lm.html("<table>#{actions}</table><table>#{rows}</table>")
+  lm.html("<table>#{actions}</table><table id='board'>#{rows}</table>")
 
-  $('.location_map td').click (e) ->
+  action_buttons().click (e) ->
+    action_buttons().removeClass('selected')
+    $(this).addClass('selected')
+  action_buttons().first().addClass('selected')
+
+  $('.location_map #board td').click (e) ->
     cell_x = $(this).data('x')
     cell_y = $(this).data('y')
     moveTo(cell_x,cell_y,0,character_id)

@@ -40,8 +40,7 @@ class Character < ActiveRecord::Base
   def other_attributes
     [
       :charisma,
-      :land_speed,
-      :current_action
+      :land_speed
     ]
   end
 
@@ -79,6 +78,7 @@ class Character < ActiveRecord::Base
 
       character.occupation = Occupation.random
       Actions::Run.create!(character: character)
+      Actions::HunkerDown.create!(character: character)
       character
     end
 
@@ -127,7 +127,7 @@ class Character < ActiveRecord::Base
 
   def action_by_type(action_type)
     actions.find do |action|
-      action.type.to_s.downcase.split('::').second == action_type.to_s.downcase
+      action.type.to_s.split('::').second.underscore == action_type.to_s.downcase
     end
   end
 

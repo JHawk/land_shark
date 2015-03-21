@@ -32,12 +32,14 @@ class GamesController < ApplicationController
   end
 
   def update
-    if params['game_action'] == 'move'
-      character = Character.find params['character_id']
+    character = Character.find params['character_id']
+
+    if character.can? params['game_action']
       position = [params['x'], params['y'], params['z']].map(&:to_i)
-      @game.move!(character, position)
+      # TODO rename move! => take_action!
+      @game.move!(character, position, params['game_action'])
     else
-      raise "#{params['game_action']} is not supported yet!"
+      raise "#{character.name} can't #{params['game_action']}!"
     end
 
     respond_to do |format|

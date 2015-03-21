@@ -147,7 +147,7 @@ class Location < ActiveRecord::Base
     end
   end
 
-  def move!(character, position)
+  def move!(character, position, action_name)
     # characters other than the current character can take action before their turn
     time ||= game.time
 
@@ -157,7 +157,7 @@ class Location < ActiveRecord::Base
     end
 
     if characters.pcs.include?(character)
-      character.start_action!(:run, position, time)
+      character.start_action!(action_name.to_sym, position, time)
 
       # TODO - fix when prior action at and timestamps are millis
       characters.each do |c|

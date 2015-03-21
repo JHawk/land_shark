@@ -11,6 +11,11 @@
         = character.name
     %td
       = character.gender.capitalize
+  %tr
+    %td
+      = character.current_action.try(:display_name)
+    %td
+      = character.current_action.try(:finished_at)
 %table
   %tr
     %td
@@ -57,5 +62,4 @@
                 = a.to_s.humanize
             %td
               = character.send a
-
 

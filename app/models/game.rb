@@ -20,8 +20,8 @@ class Game < ActiveRecord::Base
 
   after_create :set_time!, :generate_characters!, :generate_locations!
 
-  def move!(character, position)
-    result = current_location.move!(character, position)
+  def move!(character, position, action_name)
+    result = current_location.move!(character, position, action_name)
     if result && result[:time]
       update_attributes!(
         time: result[:time],

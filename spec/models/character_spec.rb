@@ -92,6 +92,18 @@ describe Character do
     end
   end
 
+  describe "#can?" do
+    let(:character) { FactoryGirl.create :pc }
+
+    subject { character.can? action_name }
+
+    context "when action is nil" do
+      let(:action_name) { nil }
+
+      it { should be_false }
+    end
+  end
+
   describe "#drop_current_position" do
     let(:character) { Character.new(x: 1, y: 2, z: 3) }
     let(:path) do
