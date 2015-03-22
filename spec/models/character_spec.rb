@@ -23,6 +23,7 @@ describe Character do
   it { should have_many(:moves) }
 
   it { should belong_to(:occupation) }
+  it { should belong_to(:target_character) }
 
   it { should belong_to(:current_action) }
   it { should belong_to(:location) }

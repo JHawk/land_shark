@@ -73,7 +73,7 @@ describe Game do
         character.save
       end
 
-      subject { game.move! character, location.rand_open_position}
+      subject { game.move! character, location.rand_open_position, :run}
 
       it 'skips the update' do
         start_time = game.time
@@ -89,7 +89,7 @@ describe Game do
         start_time = game.time
 
         location.characters.pcs.each do |c|
-          game.move! c, location.rand_open_position
+          game.move! c, location.rand_open_position, :run
         end
 
         expect(game.reload.time.to_i).to be > start_time.to_i

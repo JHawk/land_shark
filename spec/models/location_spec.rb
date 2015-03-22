@@ -209,7 +209,7 @@ describe Location do
       location.update_attributes!(current_character: character)
     end
 
-    subject { location.move!(character, position) }
+    subject { location.move!(character, position, :run) }
 
     context "when character is npc" do
       let(:location) { character.location }

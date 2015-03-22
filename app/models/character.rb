@@ -5,16 +5,16 @@ class Character < ActiveRecord::Base
 
   include StInheritable
 
-  belongs_to :location
   belongs_to :current_action, class_name: 'Action'
+  belongs_to :equipped_item
   belongs_to :game
+  belongs_to :location
   belongs_to :occupation
+  belongs_to :target_character, class_name: 'Character'
 
   has_many :actions, dependent: :destroy
-  has_many :moves, dependent: :destroy
-
   has_many :items
-  belongs_to :equipped_item
+  has_many :moves, dependent: :destroy
 
   def mind_attributes
     [
