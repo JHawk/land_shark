@@ -6,7 +6,7 @@ class Character < ActiveRecord::Base
   include StInheritable
 
   belongs_to :current_action, class_name: 'Action'
-  belongs_to :equipped_item
+  belongs_to :equipped_item, class_name: 'Item'
   belongs_to :game
   belongs_to :location
   belongs_to :occupation

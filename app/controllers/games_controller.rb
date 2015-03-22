@@ -36,8 +36,7 @@ class GamesController < ApplicationController
 
     tci = params['target_character_id']
     if tci && Character.find(tci)
-      character.target_character_id = params['target_character_id']
-      character.save!
+      character.update_attributes!(target_character_id: tci)
     end
 
     if character.can?(params['game_action'])

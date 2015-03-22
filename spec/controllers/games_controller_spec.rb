@@ -15,14 +15,30 @@ describe GamesController do
       let(:character) {FactoryGirl.create :character}
 
       context 'when character can move' do
+        let(:target) {FactoryGirl.create :character}
+
         before do
           Game.any_instance.should_receive(:move!)
           Actions::Run.create!(character: character)
         end
 
-        it "returns the game json" do
+        it "assigns the game" do
           put :update, {:id => game.to_param, 'game_action' => 'run', 'character_id' => character.id}, format: :json
 
+          assigns(:game).should be_a(Game)
+        end
+
+        it "sets the target character" do
+          valid_params = {
+            :id => game.to_param,
+            'game_action' => 'run',
+            'target_character_id' => target.id,
+            'character_id' => character.id
+          }
+
+          put :update, valid_params, format: :json
+
+          expect(character.reload.target_character).to eq(target)
           assigns(:game).should be_a(Game)
         end
       end

@@ -22,9 +22,9 @@ describe Character do
   it { should have_many(:actions) }
   it { should have_many(:moves) }
 
+  it { should belong_to(:equipped_item) }
   it { should belong_to(:occupation) }
   it { should belong_to(:target_character) }
-
   it { should belong_to(:current_action) }
   it { should belong_to(:location) }
   it { should belong_to(:game) }
