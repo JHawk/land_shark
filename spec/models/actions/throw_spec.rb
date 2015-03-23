@@ -42,6 +42,14 @@ describe Actions::Throw do
           expect(character.reload.items).to_not include(item)
           expect(character.reload.equipped_item_id).to be_nil
         end
+
+        it 'should damage the target' do
+          prior_hit_points = target.hit_points
+
+          subject
+
+          expect(target.reload.hit_points).to be < prior_hit_points
+        end
       end
     end
   end

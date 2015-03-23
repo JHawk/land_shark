@@ -16,11 +16,10 @@ class Actions::Throw < Action
   end
 
   def delivery
-    target = Character.find character.target_character_id
-    item = Item.find character.equipped_item_id
+    target = character.target_character
+    item = character.equipped_item
 
-    target.hit_points = target.hit_points - item.damage
-    target.save!
+    character.ranged_attack(target).with(item).resolve!
 
     item.update_attributes!(character_id: nil)
     character.update_attributes!(equipped_item_id: nil)

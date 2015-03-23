@@ -49,6 +49,19 @@ describe Character do
     it { subject.is_pc.should be_false }
   end
 
+  describe "#equip!" do
+    let(:character) { FactoryGirl.create :pc }
+
+    subject { character.equip! }
+
+    it 'add an item to the inventory' do
+      subject
+
+      expect(character.reload.items).to be_present
+      expect(character.reload.equipped_item).not_to be_nil
+    end
+  end
+
   describe ".#generate_characteristics" do
     subject { Characters::Human.generate_characteristics }
 

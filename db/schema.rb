@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150321161832) do
+ActiveRecord::Schema.define(version: 20150323210537) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 20150321161832) do
     t.string   "gender",              default: "none", null: false
     t.integer  "target_character_id"
     t.integer  "equipped_item_id"
+    t.boolean  "is_dead",             default: false,  null: false
+    t.boolean  "is_insane",           default: false,  null: false
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"

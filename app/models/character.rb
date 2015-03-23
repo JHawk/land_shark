@@ -80,9 +80,13 @@ class Character < ActiveRecord::Base
       character = self.create!(generate_characteristics.merge({ is_pc: is_pc }))
 
       character.occupation = Occupation.random
+
       Actions::Run.create!(character: character)
       Actions::HunkerDown.create!(character: character)
       Actions::Throw.create!(character: character)
+
+      character.equip!
+
       character
     end
 
@@ -119,10 +123,57 @@ class Character < ActiveRecord::Base
     end
   end
 
+  def equip!
+    5.times do |i|
+      items << Item.create!(name: "knife #{rand 100000}", damage: (rand 5))
+    end
+
+    self.update_attributes!(equipped_item_id: items.sample.id)
+  end
+
   def drop_current_position(_path)
     _path.reject do |pos|
       pos == position_a || (pos.size == 2 && pos == [x,y])
     end
+  end
+
+  class Attack
+    attr_reader :attacker,
+      :target,
+      :item,
+      :accuracy,
+      :damage,
+      :power,
+      :crit
+
+    def initialize(attacker, target)
+      @attacker = attacker
+      @target = target
+
+      @damage = [0, attacker.strength - 10].max
+      @accuracy = [0, attacker.agility - 10].max
+    end
+
+    def with(item)
+      @item = item
+      @damage = @damage + item.damage
+      puts "DAMAGE #{@damage}"
+      self
+    end
+
+    def resolve!
+      target.update_attributes!(hit_points: target.hit_points - @damage)
+
+      if target.hit_points < 1
+        target.update_attributes!({
+          is_dead: true
+        })
+      end
+    end
+  end
+
+  def ranged_attack(target)
+    Attack.new(self, target)
   end
 
   def can?(action_name, target=nil)
