@@ -14,7 +14,7 @@ describe Action do
     it 'should update the action' do
       subject
 
-      expect(action.reload.started_at).to eq(time)
+      expect(action.reload.started_at.to_i).to eq(time.to_i)
       expect(action.reload.finished?).to be_false
     end
   end
