@@ -1,4 +1,5 @@
 require 'st_inheritable'
+require 'errors/wrong_character_moved_error'
 require 'pathfinder/finders/a_star'
 
 class Location < ActiveRecord::Base
@@ -10,6 +11,8 @@ class Location < ActiveRecord::Base
   belongs_to :game
 
   validates_presence_of :type
+
+  before_save :ensure_current_pc
 
   class << self
     def generate!(game=nil)
@@ -55,6 +58,10 @@ class Location < ActiveRecord::Base
     def npcs
       positioned.where(is_pc: false)
     end
+
+    def by_initiative
+      order('agility DESC')
+    end
   end
 
   def rand_open_position
@@ -96,30 +103,25 @@ class Location < ActiveRecord::Base
   end
 
   TICK_TIME = 1 # seconds for now
-  # add initiative order?
+
   def next_current_character(time=nil, tick_time=TICK_TIME)
     return unless characters.pcs.present?
 
     time ||= game.time
     time_s = time.to_i
 
-    _characters = characters
-    slices = []
-
+    _characters = characters.by_initiative
     _count = 0
 
     while true do
       utc_t = Time.at(time_s).utc
-
-      slices << json_map
-
       _count += 1
+
       raise "Out of Control" if _count > 1000
 
       _characters.each do |c|
         if c.idle?(utc_t)
           if c.is_pc
-            # pc's turn
             return {
               pc: c,
               time: utc_t
@@ -148,12 +150,10 @@ class Location < ActiveRecord::Base
   end
 
   def move!(character, position, action_name)
-    # characters other than the current character can take action before their turn
     time ||= game.time
 
-    if character.id != current_character_id
-      # TODO - prevent this fo' real some time
-      puts "#{character.id}) It is not #{character.name}'s turn!"
+    if character != current_character
+      raise Errors::WrongCharacterMovedError.new(self, character)
     end
 
     if characters.pcs.include?(character)
@@ -169,10 +169,19 @@ class Location < ActiveRecord::Base
       if nextone[:pc]
         self.update_attributes!(current_character_id: nextone[:pc].id)
       end
-
       nextone
     else
       false
+    end
+  end
+
+  def evacuate!
+    characters.each do |c|
+      c.update_attributes!(
+        location_id: nil,
+        current_action_id: nil,
+        path: nil
+      )
     end
   end
 
@@ -226,6 +235,12 @@ class Location < ActiveRecord::Base
       } : {}
 
     building_positions(sprites_map).merge(cc_response)
+  end
+
+  private
+
+  def ensure_current_pc
+    current_character!
   end
 end
 

@@ -22,6 +22,7 @@ class Game < ActiveRecord::Base
 
   def move!(character, position, action_name)
     result = current_location.move!(character, position, action_name)
+
     if result && result[:time]
       update_attributes!(
         time: result[:time],

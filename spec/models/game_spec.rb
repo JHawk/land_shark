@@ -76,24 +76,7 @@ describe Game do
       subject { game.move! character, location.rand_open_position, :run}
 
       it 'skips the update' do
-        start_time = game.time
-
-        subject
-
-        expect(game.reload.time).to eq(start_time)
-      end
-    end
-
-    context 'when character at the location' do
-      it 'updates the game correctly' do
-        start_time = game.time
-
-        location.characters.pcs.each do |c|
-          game.move! c, location.rand_open_position, :run
-        end
-
-        expect(game.reload.time.to_i).to be > start_time.to_i
-        expect(game.reload.prior_action_at).to eq(start_time)
+        expect { subject }.to raise_error
       end
     end
   end

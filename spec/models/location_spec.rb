@@ -70,6 +70,21 @@ describe Location do
     end
   end
 
+  describe "before_save" do
+    let!(:location) { FactoryGirl.create :location }
+    let!(:character) { FactoryGirl.create :pc, location: location, x: 1, y: 2, z: 1 }
+
+    context 'when is current location' do
+      it 'will set the current character' do
+        location.current_character_id = nil
+
+        location.save!
+
+        expect(location.reload.current_character).to eq(character)
+      end
+    end
+  end
+
   describe "characters.visible" do
     subject { location.characters.visible }
 
@@ -105,6 +120,17 @@ describe Location do
     end
   end
 
+  describe "characters#by_initiative" do
+    let(:location) { FactoryGirl.create :location }
+    let(:agile_character) { FactoryGirl.create :character, location: location, agility: 1000 }
+
+    let(:slow_character) { FactoryGirl.create :character, location: location, agility: 1 }
+
+    subject { location.characters.by_initiative}
+
+    it { should eq([agile_character, slow_character]) }
+  end
+
   describe "#moves.since" do
     let(:npc) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: false }
     let(:pc) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: true }
@@ -129,6 +155,21 @@ describe Location do
 
     #it { subject.count.should eq(2) }
     #it { should eq([recent_pc_move, recent_npc_move]) }
+  end
+
+  describe "#evacuate!" do
+    let!(:character) { FactoryGirl.create :character, location: location }
+    let!(:location) { FactoryGirl.create :location }
+
+    subject { location.evacuate! }
+
+    it 'removes the characters from the location' do
+      subject
+
+      expect(location.reload.characters).to be_empty
+      expect(character.reload.current_action).to be_nil
+      expect(character.reload.path).to be_nil
+    end
   end
 
   describe "#spawn" do
