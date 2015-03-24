@@ -90,8 +90,8 @@ onMapSuccess = (response) ->
       visible = drop_z[coord]
       klass = if visible
         # hack
-        if visible["charisma"]
-          if visible["is_pc"]
+        if visible["charisma"] || visible[0]?["charisma"]
+          if visible["is_pc"] || visible[0]?["is_pc"]
             if current_character['x'] == x && current_character['y'] == y
               'current_character'
             else
@@ -121,7 +121,7 @@ onMapSuccess = (response) ->
     coord = "[#{cell_x}, #{cell_y}]"
     visible = drop_z[coord]
     target_character_id = undefined
-    if visible?["charisma"]
-      target_character_id = visible['id']
+    if visible?["charisma"] || visible?[0]?["charisma"]
+      target_character_id = visible['id'] || visible?[0]?['id']
     moveTo(cell_x,cell_y,0,character_id,target_character_id)
 

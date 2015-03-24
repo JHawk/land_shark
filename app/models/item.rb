@@ -1,7 +1,12 @@
+require 'positionable'
+
 class Item < ActiveRecord::Base
-  validates_uniqueness_of :name
+
+  include Positionable
+
   validates_presence_of :name
 
   belongs_to :character
+  belongs_to :location
 end
 

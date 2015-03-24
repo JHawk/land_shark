@@ -1,9 +1,11 @@
 require 'faker'
 require 'st_inheritable'
+require 'positionable'
 
 class Character < ActiveRecord::Base
 
   include StInheritable
+  include Positionable
 
   belongs_to :current_action, class_name: 'Action'
   belongs_to :equipped_item, class_name: 'Item'
@@ -263,14 +265,6 @@ class Character < ActiveRecord::Base
 
   def remaining_path_a
     drop_current_position(path_a)
-  end
-
-  def position_a
-    [x,y,z]
-  end
-
-  def position
-    {x:x,y:y,z:z}
   end
 
   def tick(time)

@@ -3,6 +3,7 @@ require 'pathfinder/finders/a_star'
 
 describe Location do
   it { should have_many(:characters) }
+  it { should have_many(:items) }
   it { should have_many(:buildings) }
   it { should have_one(:current_character) }
   it { should belong_to(:game) }
@@ -85,6 +86,51 @@ describe Location do
     end
   end
 
+  describe "items.visible" do
+    subject { location.items.visible }
+
+    context 'belongs to a location' do
+      let(:x) { 1 }
+      let(:y) { 1 }
+      let(:z) { 1 }
+
+      let(:location) { FactoryGirl.create :location }
+      let(:item) { FactoryGirl.create :item, location: location, x: x, y: y, z: z }
+
+      context 'all positions present' do
+        it { should include(item) }
+
+        context "when in a character's inventory" do
+          let(:character) { FactoryGirl.create :character }
+
+          before do
+            item.update_attributes!(character: character)
+          end
+
+          it { should_not include(item) }
+        end
+      end
+
+      context 'character missing x position' do
+        let(:x) { nil }
+
+        it { should_not include(item) }
+      end
+
+      context 'character missing y position' do
+        let(:y) { nil }
+
+        it { should_not include(item) }
+      end
+
+      context 'character missing z position' do
+        let(:z) { nil }
+
+        it { should_not include(item) }
+      end
+    end
+  end
+
   describe "characters.visible" do
     subject { location.characters.visible }
 
@@ -106,13 +152,13 @@ describe Location do
         it { should_not include(character) }
       end
 
-      context 'character missing x position' do
+      context 'character missing y position' do
         let(:y) { nil }
 
         it { should_not include(character) }
       end
 
-      context 'character missing x position' do
+      context 'character missing z position' do
         let(:z) { nil }
 
         it { should_not include(character) }
@@ -316,6 +362,13 @@ describe Location do
 
       it { should_not include(character) }
     end
+
+    context "when item is visible" do
+      let(:location) { FactoryGirl.create :location }
+      let(:item) { FactoryGirl.create :item, location: location, x:1, y:2, z:1 }
+
+      it { should include(item) }
+    end
   end
 
   describe "#rand_open_position" do
@@ -415,18 +468,37 @@ describe Location do
   end
 
   describe "#json_map" do
+    let(:location) { FactoryGirl.create :location }
 
     subject { location.json_map }
 
     context "when location has a character" do
-      let(:location) { FactoryGirl.create :location }
       let(:character) { FactoryGirl.create :character }
 
       before do
         location.spawn([character])
       end
 
-      it { subject.values.should include(character) }
+      it { subject.values.should include([character]) }
+
+      context "when location has an item at the same position" do
+        let!(:item) { FactoryGirl.create :item, location:location }
+
+        before do
+          item.update_attributes!({
+            x:character.x,
+            y:character.y,
+            z:character.z
+          })
+        end
+
+        it 'includes both objects at the position' do
+          m = location.reload.json_map
+
+          expect(m[[character.x,character.y,character.z]]).to include(character)
+          expect(m[[character.x,character.y,character.z]]).to include(item)
+        end
+      end
     end
 
     context "when location has a building" do
@@ -450,7 +522,7 @@ describe Location do
       end
 
       it { subject.keys.should include(position) }
-      it { subject.values.should include(character) }
+      it { subject.values.should include([character]) }
     end
   end
 end

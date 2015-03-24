@@ -17,10 +17,16 @@ describe Actions::Throw do
   end
 
   describe "#delivery" do
+    let(:location) { FactoryGirl.create :location }
+
     subject { action.delivery }
 
+    before do
+      character.update_attributes!(location_id: location.id)
+    end
+
     context 'when character has a target character' do
-      let(:target) { FactoryGirl.create :character }
+      let(:target) { FactoryGirl.create :character, x:9, y:8, z:7 }
 
       before do
         character.update_attributes!(target_character_id: target.id)
@@ -40,6 +46,13 @@ describe Actions::Throw do
           subject
 
           expect(character.reload.items).to_not include(item)
+          expect(item.reload.location).to eq(character.location)
+
+          expect(item.reload.x).to be_present
+          expect(item.reload.y).to be_present
+          expect(item.reload.z).to be_present
+
+          expect(item.reload.location).to be_present
           expect(character.reload.equipped_item_id).to be_nil
         end
 

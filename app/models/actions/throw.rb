@@ -21,7 +21,13 @@ class Actions::Throw < Action
 
     character.ranged_attack(target).with(item).resolve!
 
-    item.update_attributes!(character_id: nil)
+    item.update_attributes!({
+      character_id: nil,
+      location_id: character.location_id,
+      x: target.x,
+      y: target.y,
+      z: target.z
+    })
     character.update_attributes!(equipped_item_id: nil)
   end
 

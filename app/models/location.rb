@@ -64,6 +64,18 @@ class Location < ActiveRecord::Base
     end
   end
 
+  has_many :items do
+    def positioned
+      where('x IS NOT NULL').
+        where('y IS NOT NULL').
+        where('z IS NOT NULL')
+    end
+
+    def visible
+      positioned.where('character_id IS NULL')
+    end
+  end
+
   def rand_open_position
     _json_map = json_map
 
@@ -197,10 +209,6 @@ class Location < ActiveRecord::Base
     end
   end
 
-  def visible_sprites
-    characters.visible
-  end
-
   def building_positions(init={})
     buildings.inject(init) do |acc, building|
       building_positions = building.grid.reject {|k,v| k.is_a? Symbol}
@@ -220,9 +228,14 @@ class Location < ActiveRecord::Base
     end
   end
 
+  def visible_sprites
+    characters.visible.concat(items.visible)
+  end
+
   def json_map
     sprites_map = visible_sprites.inject({}) do |acc, sprite|
-      acc[sprite.position_a] = sprite
+      acc[sprite.position_a] ||= []
+      acc[sprite.position_a] << sprite
       acc
     end
 

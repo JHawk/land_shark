@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150323210537) do
+ActiveRecord::Schema.define(version: 20150324135159) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -88,6 +88,10 @@ ActiveRecord::Schema.define(version: 20150323210537) do
     t.datetime "updated_at"
     t.integer  "character_id"
     t.integer  "damage"
+    t.integer  "x"
+    t.integer  "y"
+    t.integer  "z"
+    t.integer  "location_id"
   end
 
   create_table "locations", force: true do |t|
