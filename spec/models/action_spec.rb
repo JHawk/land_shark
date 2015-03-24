@@ -26,6 +26,10 @@ describe Action do
     let(:finished_at) {1.hour.from_now}
     let(:action) { FactoryGirl.create :action, finished_at: finished_at }
 
+    before do
+      action.start!(time)
+    end
+
     subject { action.finished?(time) }
 
     context 'when finished_at before given time' do

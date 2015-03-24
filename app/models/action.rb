@@ -1,4 +1,5 @@
 require 'st_inheritable'
+require 'errors/action_not_started_error'
 
 class Action < ActiveRecord::Base
   include StInheritable

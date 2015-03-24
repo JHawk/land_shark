@@ -86,8 +86,9 @@ class Character < ActiveRecord::Base
       Actions::Run.create!(character: character)
       Actions::HunkerDown.create!(character: character)
       Actions::Throw.create!(character: character)
+      Actions::Equip.create!(character: character)
 
-      character.equip!
+      character.generate_equipment!
 
       character
     end
@@ -125,12 +126,15 @@ class Character < ActiveRecord::Base
     end
   end
 
-  def equip!
+  def generate_equipment!
     5.times do |i|
       items << Item.create!(name: "knife #{rand 100000}", damage: (rand 5))
     end
 
     self.update_attributes!(equipped_item_id: items.sample.id)
+  end
+
+  def equip!
   end
 
   def drop_current_position(_path)

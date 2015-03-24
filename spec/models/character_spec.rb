@@ -49,10 +49,10 @@ describe Character do
     it { subject.is_pc.should be_false }
   end
 
-  describe "#equip!" do
+  describe "#generate_equipment!" do
     let(:character) { FactoryGirl.create :pc }
 
-    subject { character.equip! }
+    subject { character.generate_equipment! }
 
     it 'add an item to the inventory' do
       subject
