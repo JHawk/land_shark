@@ -132,8 +132,14 @@ class Location < ActiveRecord::Base
       raise "Out of Control" if _count > 1000
 
       _characters.each do |c|
+        c.tick(utc_t)
+
         if c.idle?(utc_t)
           if c.is_pc
+            characters.includes(:current_action).each do |c|
+              c.current_action.try(:ensure_finalized!)
+            end
+
             return {
               pc: c,
               time: utc_t
@@ -141,8 +147,6 @@ class Location < ActiveRecord::Base
           else
             c.start_action!(:run, rand_open_position, time)
           end
-        else
-          c.tick(utc_t)
         end
       end
 

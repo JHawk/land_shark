@@ -63,6 +63,18 @@ describe Actions::Throw do
 
           expect(target.reload.hit_points).to be < prior_hit_points
         end
+
+        it 'should damage only once' do
+          prior_hit_points = target.hit_points
+
+          action.delivery
+
+          after_first_hit = target.reload.hit_points
+
+          action.delivery
+
+          expect(target.reload.hit_points).to eq(after_first_hit)
+        end
       end
     end
   end

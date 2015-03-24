@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150324152011) do
+ActiveRecord::Schema.define(version: 20150324171434) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20150324152011) do
     t.integer  "ticks",          default: 0, null: false
     t.datetime "last_ticked_at"
     t.integer  "character_id"
+    t.boolean  "finished"
   end
 
   add_index "actions", ["character_id"], name: "index_actions_on_character_id"

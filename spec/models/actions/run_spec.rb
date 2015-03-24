@@ -50,6 +50,10 @@ describe Actions::Run do
 
     let(:started_at) { Time.now }
 
+    before do
+      action.start!(started_at)
+    end
+
     subject { action.tick(time) }
 
     context 'when not finished' do

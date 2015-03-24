@@ -135,6 +135,7 @@ class Character < ActiveRecord::Base
   end
 
   def equip!
+    update_attributes!(equipped_item: items.sample)
   end
 
   def drop_current_position(_path)
@@ -278,7 +279,7 @@ class Character < ActiveRecord::Base
   end
 
   def idle?(time)
-    current_action.nil? || current_action.finished?(time)
+    current_action.nil? || current_action.finished? || current_action.times_up?(time)
   end
 end
 

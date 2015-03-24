@@ -49,6 +49,23 @@ describe Character do
     it { subject.is_pc.should be_false }
   end
 
+  describe "#equip!" do
+    let(:character) { FactoryGirl.create :pc }
+    let(:item) { FactoryGirl.create :item }
+
+    before do
+      character.items << item
+    end
+
+    subject { character.equip! }
+
+    it 'sets the item to the equipped item' do
+      subject
+
+      expect(character.reload.equipped_item).to eq(item)
+    end
+  end
+
   describe "#generate_equipment!" do
     let(:character) { FactoryGirl.create :pc }
 

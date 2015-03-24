@@ -273,14 +273,16 @@ describe Location do
         let(:action) { FactoryGirl.create :action, finished_at: 1.minute.from_now}
         before do
           pc.current_action = action
+          action.start! time
           pc.save
         end
 
         it 'ticks the characters until a pc is available' do
           result = subject
 
-          expect(pc.current_action.reload.ticks).to eq(3)
-          expect(pc.current_action.reload.finished?(result[:time])).to be_true
+          expect(pc.current_action.reload.ticks).to be > 2
+          expect(pc.current_action.reload.times_up?(result[:time])).to be_true
+          expect(pc.current_action.reload.finished?).to be_true
           expect(result[:pc]).to eq(pc)
           expect(result[:time]).to be > time
         end

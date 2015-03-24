@@ -21,6 +21,7 @@ class Actions::Equip < Action
   end
 
   def on_finish
+    super
     character.equip!
   end
 end

@@ -16,19 +16,24 @@ class Actions::Throw < Action
   end
 
   def delivery
-    target = character.target_character
-    item = character.equipped_item
+    unless finished?
+      target = character.target_character
+      item = character.equipped_item
 
-    character.ranged_attack(target).with(item).resolve!
+      character.ranged_attack(target).with(item).resolve!
 
-    item.update_attributes!({
-      character_id: nil,
-      location_id: character.location_id,
-      x: target.x,
-      y: target.y,
-      z: target.z
-    })
-    character.update_attributes!(equipped_item_id: nil)
+      item.update_attributes!({
+        character_id: nil,
+        location_id: character.location_id,
+        x: target.x,
+        y: target.y,
+        z: target.z
+      })
+
+      character.update_attributes!(equipped_item_id: nil)
+
+      update_attributes!(finished: true)
+    end
   end
 
   def follow_through
