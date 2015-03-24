@@ -12,7 +12,7 @@ class Location < ActiveRecord::Base
 
   validates_presence_of :type
 
-  before_save :ensure_current_pc
+  before_save :ensure_current_pc, :spawn_pcs_together
 
   class << self
     def generate!(game=nil)
@@ -24,7 +24,7 @@ class Location < ActiveRecord::Base
 
         npc = Characters::Human.generate_npc!
         location.characters << npc
-        location.spawn([npc])
+        location.spawn(npc)
 
         location.buildings << Building.create!(bottom_left_x:x, bottom_left_y: y)
       end
@@ -76,20 +76,55 @@ class Location < ActiveRecord::Base
     end
   end
 
-  def rand_open_position
+  def closed_positions
     _json_map = json_map
-
     _json_map.clone.each do |k, unwalkable|
       if k.is_a?(Array) && k.size > 2
         _json_map[k.take(2)] = unwalkable
       end
     end
+    _json_map
+  end
+
+  def valid_position?(position)
+    position[:x] >= 0 &&
+    position[:y] >= 0 &&
+    position[:x] < max_x &&
+    position[:y] < max_y
+  end
+
+  def positions_near(position)
+    (position[:x] - 2).upto(position[:x] + 2).map do |x|
+      (position[:y] - 2).upto(position[:y] + 2).map do |y|
+        unless (x == position[:x] && y == position[:y])
+          p = {x:x, y:y, z:position[:z]}
+          if valid_position?(p)
+            p
+          end
+        end
+      end
+    end.flatten.compact.shuffle
+  end
+
+  def open_position_near(position)
+    _positions_near = positions_near(position)
+    open_position { _positions_near.pop }
+  end
+
+  def rand_open_position
+    open_position { rand_position }
+  end
+
+  def open_position
+    _closed_positions = closed_positions
 
     attempts = max_x + max_y + max_z
     attempts.times do
-      position = rand_position
-      unless _json_map[[position[:x],position[:y]]]
-        return position
+      position = yield
+      if position
+        unless _closed_positions[[position[:x],position[:y]]]
+          return position
+        end
       end
     end
 
@@ -201,15 +236,41 @@ class Location < ActiveRecord::Base
     end
   end
 
-  def spawn(characters)
-    characters.each do |character|
-      character.update_attributes!(
-        rand_open_position.merge(
-          {
-            location_id: id
-          }
-        )
+  def spawn_together(characters)
+    if characters.present?
+      characters = characters.shuffle
+      character = characters.shift
+      spawn(character)
+
+      characters.each do |c|
+        position = character.reload.position
+        spawn_near(c,position)
+        character = c
+      end
+    end
+  end
+
+  def spawn(character)
+    spawn_at(character, rand_open_position)
+  end
+
+  def spawn_near(character, position)
+    spawn_at(character, open_position_near(position))
+  end
+
+  def spawn_at(character,position)
+    character.update_attributes!(
+      position.merge(
+        {
+          location_id: id
+        }
       )
+    )
+  end
+
+  def spawn_group(characters)
+    characters.each do |character|
+      spawn(character)
     end
   end
 
@@ -258,6 +319,10 @@ class Location < ActiveRecord::Base
 
   def ensure_current_pc
     current_character!
+  end
+
+  def spawn_pcs_together
+    spawn_together(characters.pcs)
   end
 end
 

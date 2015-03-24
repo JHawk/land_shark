@@ -58,13 +58,29 @@ describe Game do
 
   end
 
+  describe "#open_position_near" do
+    let(:location) { FactoryGirl.create :location }
+    let(:position) {{x:10, y:10, z:1}}
+    subject { location.open_position_near(position) }
+
+    it 'should be close to the given position' do
+      result = subject
+
+      expect(result[:x]).to be >= 8
+      expect(result[:x]).to be <= 12
+
+      expect(result[:y]).to be >= 8
+      expect(result[:y]).to be <= 12
+    end
+  end
+
   describe "#move!" do
     let(:game) { FactoryGirl.create :game }
     let(:location) { game.current_location! }
     let(:character) { location.current_character }
 
     before do
-      location.spawn [character]
+      location.spawn character
     end
 
     context 'when character not at the location' do

@@ -218,10 +218,31 @@ describe Location do
     end
   end
 
-  describe "#spawn" do
+  describe "#spawn_together" do
+    let!(:location) { FactoryGirl.create :location }
+    let!(:characters) do
+      0.upto(2).map do |i|
+        FactoryGirl.create :character, location: location
+      end
+    end
+
+    subject { location.spawn_together(characters) }
+
+    it 'puts them near each other' do
+      subject
+
+      first_character = characters.first.reload
+      second_character = characters.second.reload
+
+      x_distance = (first_character.x - second_character.x).abs
+      expect(x_distance).to be < 6
+    end
+  end
+
+  describe "#spawn_group" do
     let(:characters) { [ character ] }
 
-    subject { location.spawn(characters) }
+    subject { location.spawn_group(characters) }
 
     context "when character not at location" do
       let(:character) { FactoryGirl.create :character }
@@ -373,6 +394,35 @@ describe Location do
     end
   end
 
+  describe "#open_position_near" do
+    let(:location) { FactoryGirl.create :location, max_x:max_x, max_y:max_y, max_z:1 }
+
+    let(:position) {{x:0,y:0,z:0}}
+
+    subject {location.open_position_near(position)}
+
+    context "only given position" do
+      let(:max_x) {1}
+      let(:max_y) {1}
+
+      it { should be_nil }
+    end
+
+    context "only 2 positions" do
+      let(:max_x) {1}
+      let(:max_y) {2}
+
+      it { should eq({:x=>0, :y=>1, :z=>0}) }
+    end
+
+    context "no positions" do
+      let(:max_x) {-1}
+      let(:max_y) {-1}
+
+      it { should be_nil }
+    end
+  end
+
   describe "#rand_open_position" do
     let(:location) { FactoryGirl.create :location, max_x:max_x, max_y:max_y, max_z:1 }
 
@@ -419,8 +469,8 @@ describe Location do
       let(:npcs) { [ ] }
 
       before do
-        location.spawn pcs
-        location.spawn npcs
+        location.spawn_group pcs
+        location.spawn_group npcs
       end
 
       context "when the location has a current character" do
@@ -478,7 +528,7 @@ describe Location do
       let(:character) { FactoryGirl.create :character }
 
       before do
-        location.spawn([character])
+        location.spawn(character)
       end
 
       it { subject.values.should include([character]) }
@@ -520,7 +570,7 @@ describe Location do
       let(:position) { building.grid.keys.reject {|key| key.is_a? Symbol}.first }
 
       before do
-        location.spawn([character])
+        location.spawn(character)
       end
 
       it { subject.keys.should include(position) }

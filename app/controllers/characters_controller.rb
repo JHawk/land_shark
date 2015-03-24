@@ -38,7 +38,7 @@ class CharactersController < ApplicationController
 
     if _location_id.present?
       location = Location.find _location_id
-      location.spawn([@character])
+      location.spawn(@character)
     elsif _location_id == ''
       _params['location_id'] = nil
     end

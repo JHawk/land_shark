@@ -66,7 +66,7 @@ class Game < ActiveRecord::Base
 
   def current_location!
     locations.sample.update_attributes!(is_current: true)
-    current_location.spawn(characters)
+    current_location.spawn_group(characters)
     current_location.reload
   end
 
