@@ -45,6 +45,30 @@ describe GamesController do
     end
   end
 
+  describe "GET next_event" do
+    let(:game) {FactoryGirl.create :game}
+
+    before do
+      game.locations.each do |l|
+        l.encounters.delete_all
+      end
+    end
+
+    it "updates the game world" do
+      prior_time = game.time
+
+      get :next_event, {:id => game.to_param}, format: :json
+
+      expect(game.reload.time).to be > prior_time
+    end
+
+    it "returns the game json" do
+      get :next_event, {:id => game.to_param}, format: :json
+
+      assigns(:game).should be_a(Game)
+    end
+  end
+
   describe "GET show" do
     it "returns the game json" do
       game = FactoryGirl.create :game

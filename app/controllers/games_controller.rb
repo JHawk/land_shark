@@ -17,7 +17,7 @@ class GamesController < ApplicationController
   end
 
   def next_event
-    @game.generate_encounters!
+    @game.wait_until_next!
     redirect_to(@game)
   end
 

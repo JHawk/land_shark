@@ -40,9 +40,6 @@ class Location < ActiveRecord::Base
   end
 
   has_many :encounters do
-    def incomplete
-      where(completed: false)
-    end
   end
 
   has_many :moves, through: :characters do

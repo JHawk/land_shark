@@ -2,6 +2,8 @@ class Encounter < ActiveRecord::Base
   has_many :npcs, class_name: 'Character'
   belongs_to :location
 
+  scope :incomplete, -> { where(completed: false) }
+
   validates_presence_of :location, :name
 
   class << self

@@ -75,6 +75,41 @@ describe Game do
     end
   end
 
+  describe "#wait_until_next!" do
+    let(:game) { FactoryGirl.create :game }
+    let(:location) { game.current_location! }
+
+    subject { game.wait_until_next! }
+
+    context "when incomplete encounters" do
+      before do
+        expect(game.encounters.incomplete).to be_present
+      end
+
+      it "does not generate an encounter" do
+        prior_count = game.reload.encounters.incomplete.count
+
+        subject
+
+        expect(game.reload.encounters.incomplete.count).to eq(prior_count)
+      end
+    end
+
+    context "when no incomplete encounters" do
+      before do
+        game.locations.each do |l|
+          l.encounters.delete_all
+        end
+      end
+
+      it "generates an encounter" do
+        subject
+
+        expect(game.encounters.incomplete).to be_present
+      end
+    end
+  end
+
   describe "#move!" do
     let(:game) { FactoryGirl.create :game }
     let(:location) { game.current_location! }

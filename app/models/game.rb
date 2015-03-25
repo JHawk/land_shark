@@ -4,6 +4,9 @@ class Game < ActiveRecord::Base
 
   has_many :locations
 
+  has_many :encounters, through: :locations do
+  end
+
   has_many :characters do
     def available
       where('location_id IS NULL')
@@ -73,6 +76,15 @@ class Game < ActiveRecord::Base
   def generate_encounters!
     l = locations.sample
     Encounter.generate_at! l if l
+  end
+
+  def wait_until_next!
+    if encounters.incomplete.empty?
+      generate_encounters!
+
+      new_time = encounters.incomplete.order(:starts_at).first.starts_at
+      update_attributes!(time: new_time)
+    end
   end
 
   def json_map
