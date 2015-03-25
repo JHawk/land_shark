@@ -19,5 +19,13 @@ class Encounter < ActiveRecord::Base
       encounter.reload
     end
   end
+
+  def check_complete!
+    is_completed = npcs.present? && npcs.all? { |npc| npc.is_dead? }
+    if is_completed
+      update_attributes!(completed: is_completed)
+    end
+    is_completed
+  end
 end
 

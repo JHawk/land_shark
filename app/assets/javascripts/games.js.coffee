@@ -88,9 +88,11 @@ onMapSuccess = (response) ->
       current_character = response['json_map']['current_character']
       coord = "[#{x}, #{y}]"
       visible = drop_z[coord]
+      title_shizzle = 'nothin'
       klass = if visible
         # hack
         if visible["charisma"] || visible[0]?["charisma"]
+          title_shizzle = visible["name"] || visible[0]?['name']
           if visible["is_pc"] || visible[0]?["is_pc"]
             if current_character['x'] == x && current_character['y'] == y
               'current_character'
@@ -105,7 +107,7 @@ onMapSuccess = (response) ->
       else
         'nothing'
 
-      "<td class='#{klass}' data-x='#{x}' data-y='#{y}'></td>"
+      "<td class='#{klass}' title='#{title_shizzle}' data-x='#{x}' data-y='#{y}'></td>"
     "<tr>#{tiles.join('')}</tr>"
 
   lm.html("<table>#{actions}</table><table id='board'>#{rows}</table>")

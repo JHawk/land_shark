@@ -172,11 +172,16 @@ class Character < ActiveRecord::Base
       target.update_attributes!(hit_points: target.hit_points - @damage)
 
       if target.hit_points < 1
-        target.update_attributes!({
-          is_dead: true
-        })
+        target.dies!
       end
     end
+  end
+
+  def dies!
+    update_attributes!({
+      is_dead: true
+    })
+    encounter.check_complete! if encounter
   end
 
   def ranged_attack(target)
