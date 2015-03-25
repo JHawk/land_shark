@@ -61,6 +61,7 @@ describe Game do
   describe "#open_position_near" do
     let(:location) { FactoryGirl.create :location }
     let(:position) {{x:10, y:10, z:1}}
+
     subject { location.open_position_near(position) }
 
     it 'should be close to the given position' do

@@ -134,7 +134,7 @@ class Character < ActiveRecord::Base
     self.update_attributes!(equipped_item_id: items.sample.id)
   end
 
-  def equip!
+  def equip!(item=nil)
     update_attributes!(equipped_item: items.sample)
   end
 

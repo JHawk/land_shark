@@ -1,0 +1,25 @@
+<h1>Listing encounters</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Completed</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @encounters.each do |encounter| %>
+      <tr>
+        <td><%= encounter.completed %></td>
+        <td><%= link_to 'Show', encounter %></td>
+        <td><%= link_to 'Edit', edit_encounter_path(encounter) %></td>
+        <td><%= link_to 'Destroy', encounter, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Encounter', new_encounter_path %>

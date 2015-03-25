@@ -6,6 +6,11 @@
 
 %table
   %tr
+    - location.encounters.each do |e|
+      %td
+        %strong
+          = e.name
+
     - location.characters.pcs.each do |c|
       %td
         = "#{c.occupation.try(:name).try(:capitalize)} #{c.name} "

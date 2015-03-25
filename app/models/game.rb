@@ -18,7 +18,7 @@ class Game < ActiveRecord::Base
     end
   end
 
-  after_create :set_time!, :generate_characters!, :generate_locations!
+  after_create :set_time!, :generate_characters!, :generate_locations!, :generate_encounters!
 
   def move!(character, position, action_name)
     result = current_location.move!(character, position, action_name)
@@ -68,6 +68,9 @@ class Game < ActiveRecord::Base
     locations.sample.update_attributes!(is_current: true)
     current_location.spawn_group(characters)
     current_location.reload
+  end
+
+  def generate_encounters!
   end
 
   def json_map

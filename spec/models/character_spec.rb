@@ -53,16 +53,18 @@ describe Character do
     let(:character) { FactoryGirl.create :pc }
     let(:item) { FactoryGirl.create :item }
 
-    before do
-      character.items << item
-    end
-
     subject { character.equip! }
 
-    it 'sets the item to the equipped item' do
-      subject
+    context "when character has items" do
+      before do
+        character.items << item
+      end
 
-      expect(character.reload.equipped_item).to eq(item)
+      it 'sets the item to the equipped item' do
+        subject
+
+        expect(character.reload.equipped_item).to eq(item)
+      end
     end
   end
 

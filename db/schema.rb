@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150324171434) do
+ActiveRecord::Schema.define(version: 20150325140404) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -69,10 +69,19 @@ ActiveRecord::Schema.define(version: 20150324171434) do
     t.boolean  "is_dead",             default: false,  null: false
     t.boolean  "is_insane",           default: false,  null: false
     t.integer  "target_item_id"
+    t.integer  "encounter_id"
   end
 
   add_index "characters", ["current_action_id"], name: "index_characters_on_current_action_id"
   add_index "characters", ["game_id"], name: "index_characters_on_game_id"
+
+  create_table "encounters", force: true do |t|
+    t.boolean  "completed"
+    t.integer  "location_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "games", force: true do |t|
     t.datetime "created_at"

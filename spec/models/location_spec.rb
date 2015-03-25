@@ -5,6 +5,7 @@ describe Location do
   it { should have_many(:characters) }
   it { should have_many(:items) }
   it { should have_many(:buildings) }
+  it { should have_many(:encounters) }
   it { should have_one(:current_character) }
   it { should belong_to(:game) }
 
@@ -201,6 +202,26 @@ describe Location do
 
     #it { subject.count.should eq(2) }
     #it { should eq([recent_pc_move, recent_npc_move]) }
+  end
+
+  describe "#generate_npc_group!" do
+    let!(:location) { FactoryGirl.create :location }
+
+    subject { location.generate_npc_group!(count) }
+
+    context "when count is neg" do
+      let(:count) { -10 }
+
+      it { should be_empty }
+    end
+
+    context "when count is pos" do
+      let(:count) { 2 }
+
+      it { subject.count.should eq(2) }
+      it { subject.first.should be_a(Character) }
+      it { subject.first.location_id.should eq(location.id) }
+    end
   end
 
   describe "#evacuate!" do

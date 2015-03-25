@@ -9,6 +9,7 @@ class Location < ActiveRecord::Base
 
   has_one :current_character, class_name: 'Character'
   belongs_to :game
+  has_many :encounters
 
   validates_presence_of :type
 
@@ -29,6 +30,15 @@ class Location < ActiveRecord::Base
         location.buildings << Building.create!(bottom_left_x:x, bottom_left_y: y)
       end
     end
+
+  end
+
+  def generate_npc_group!(count)
+    group = 1.upto(count).map do |i|
+      Characters::Human.generate_npc!
+    end
+    spawn_group group
+    group
   end
 
   has_many :moves, through: :characters do
