@@ -2,8 +2,12 @@
   = @game.time
 
 - if @game.current_location
+  - cl = @game.current_location
   %strong
-    = @game.current_location.display_name
+    = cl.display_name
+  - cl.encounters.each do |e|
+    = render 'encounters/encounter', encounter: e
+
   = form_for(@game.current_location.becomes(Location)) do |f|
     = f.hidden_field :is_current, value: false
     = f.submit "Leave Location"

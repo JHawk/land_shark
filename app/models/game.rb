@@ -71,6 +71,8 @@ class Game < ActiveRecord::Base
   end
 
   def generate_encounters!
+    l = locations.sample
+    Encounter.generate_at! l if l
   end
 
   def json_map

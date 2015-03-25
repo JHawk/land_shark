@@ -6,7 +6,7 @@ class Encounter < ActiveRecord::Base
 
   class << self
     def generate_name(npcs=nil)
-      "Take out #{npcs.join(', ')}"
+      "Take out #{npcs.map(&:name).join(', ')}"
     end
 
     def generate_at!(location)
