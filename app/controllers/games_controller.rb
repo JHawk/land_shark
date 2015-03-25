@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  before_action :set_game, only: [:next_event, :show, :edit, :update, :destroy]
 
   respond_to :html, :json
 
@@ -14,6 +14,11 @@ class GamesController < ApplicationController
       format.html { @game }
       format.json { @game }
     end
+  end
+
+  def next_event
+    @game.generate_encounters!
+    redirect_to(@game)
   end
 
   def new

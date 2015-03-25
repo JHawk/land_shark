@@ -5,9 +5,15 @@ describe Encounter do
   it { should belong_to(:location) }
 
   it { should validate_presence_of(:name) }
+  it { should validate_presence_of(:location) }
 
   describe '.generate_at!' do
     let(:location) { FactoryGirl.create :location }
+    let(:game) { double(:game, time: Time.now)}
+
+    before do
+      location.should_receive(:game).and_return(game)
+    end
 
     subject { Encounter.generate_at!(location) }
 

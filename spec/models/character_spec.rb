@@ -27,6 +27,7 @@ describe Character do
   it { should belong_to(:target_character) }
   it { should belong_to(:current_action) }
   it { should belong_to(:location) }
+  it { should belong_to(:encounter) }
   it { should belong_to(:game) }
 
   describe ".generate!" do
@@ -248,13 +249,26 @@ describe Character do
     end
   end
 
-  describe "#position_a" do
-    let(:character) { Character.new(x: 1, y: 2, z: 3) }
-    subject { character.position_a }
+  describe "#dies!" do
+    let(:character) { FactoryGirl.create :character }
 
-    it { subject[0].should eq 1 }
-    it { subject[1].should eq 2 }
-    it { subject[2].should eq 3 }
+    subject { character.dies! }
+
+    it { subject.is_dead?.should be_true }
+
+    context "when character is part of an encounter" do
+      let(:encounter) { FactoryGirl.create :encounter }
+
+      before do
+        character.update_attributes!(encounter_id: encounter.id)
+      end
+
+      it "notifies the encounter" do
+        Encounter.any_instance.should_receive(:check_complete!)
+
+        subject
+      end
+    end
   end
 
   describe "#position_a" do

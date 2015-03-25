@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150325160257) do
+ActiveRecord::Schema.define(version: 20150325193544) do
 
   create_table "actions", force: true do |t|
     t.string   "type"
@@ -81,6 +81,9 @@ ActiveRecord::Schema.define(version: 20150325160257) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.boolean  "failed",      default: false
   end
 
   create_table "games", force: true do |t|

@@ -24,10 +24,22 @@ describe LocationsController do
       let(:current_location) { game.locations.last }
 
       before do
-        current_location.update_attributes!(is_current: true)
+        current_location.update_attributes!(is_current: false)
+      end
+
+      context "when not setting current to true" do
+        it "skips updates" do
+          Location.any_instance.should_not_receive(:spawn_pcs_together)
+
+          put :update, {:id => location.to_param, :location => valid_attributes.merge({'is_current' => 'false'})}, format: :json
+
+          expect(location.reload.is_current).to be_false
+        end
       end
 
       it "updates the is current attr" do
+        Location.any_instance.should_receive(:spawn_pcs_together)
+
         put :update, {:id => location.to_param, :location => valid_attributes.merge({'is_current' => 'true'})}, format: :json
 
         expect(location.reload.is_current).to be_true

@@ -9,11 +9,10 @@ class Location < ActiveRecord::Base
 
   has_one :current_character, class_name: 'Character'
   belongs_to :game
-  has_many :encounters
 
   validates_presence_of :type
 
-  before_save :ensure_current_pc, :spawn_pcs_together
+  before_save :ensure_current_pc
 
   class << self
     def generate!(game=nil)
@@ -30,7 +29,6 @@ class Location < ActiveRecord::Base
         location.buildings << Building.create!(bottom_left_x:x, bottom_left_y: y)
       end
     end
-
   end
 
   def generate_npc_group!(count)
@@ -39,6 +37,12 @@ class Location < ActiveRecord::Base
     end
     spawn_group group
     group
+  end
+
+  has_many :encounters do
+    def incomplete
+      where(completed: false)
+    end
   end
 
   has_many :moves, through: :characters do
@@ -182,7 +186,12 @@ class Location < ActiveRecord::Base
         if c.idle?(utc_t)
           if c.is_pc
             characters.includes(:current_action).each do |c|
-              c.current_action.try(:ensure_finalized!)
+              begin
+                c.current_action.try(:ensure_finalized!)
+              rescue
+                # TODO - here
+                puts 'Do something about me plz'
+              end
             end
 
             return {
@@ -291,15 +300,19 @@ class Location < ActiveRecord::Base
     end
   end
 
+  def select_current_character!
+    c = characters.pcs.positioned.sample
+    if c.present?
+      self.update_attributes!(current_character_id: c.id)
+    end
+    c
+  end
+
   def current_character!
     if current_character_id.present?
       Character.find current_character_id
     else
-      c = characters.pcs.sample
-      if c.present?
-        self.update_attributes!(current_character_id: c.id)
-      end
-      c
+      select_current_character!
     end
   end
 
@@ -325,14 +338,14 @@ class Location < ActiveRecord::Base
     building_positions(sprites_map).merge(cc_response)
   end
 
+  def spawn_pcs_together
+    spawn_together(characters.pcs)
+  end
+
   private
 
   def ensure_current_pc
     current_character!
-  end
-
-  def spawn_pcs_together
-    spawn_together(characters.pcs)
   end
 end
 

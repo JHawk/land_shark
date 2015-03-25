@@ -22,6 +22,9 @@
 
   .location_map{:data => {'game-id' => @game.id}}
 - else
+  %p
+    = link_to 'WAIT', next_event_game_path(@game)
+
   %h1 Locations
   - @game.locations.each do |l|
     = render 'locations/location', location: l

@@ -178,6 +178,17 @@ describe Location do
     it { should eq([agile_character, slow_character]) }
   end
 
+  describe "#encounters.incomplete" do
+    let(:location) { complete_encounter.location }
+    let!(:complete_encounter) { FactoryGirl.create :encounter, completed: true }
+    let!(:incomplete_encounter) { FactoryGirl.create :encounter, completed: false, location: complete_encounter.location }
+
+    subject { location.encounters.incomplete }
+
+    it { should include(incomplete_encounter) }
+    it { should_not include(complete_encounter) }
+  end
+
   describe "#moves.since" do
     let(:npc) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: false }
     let(:pc) { FactoryGirl.create :character_visible_at_location, x:2, y:2, z:1, land_speed:5, is_pc: true }

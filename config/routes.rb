@@ -15,7 +15,9 @@ Rails.application.routes.draw do
 
   resources :locations
 
-  resources :games
+  resources :games do
+    get :next_event, on: :member
+  end
 
   devise_for :users
 

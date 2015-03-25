@@ -1,27 +1,29 @@
 %table
   %tr
     %td
-      %strong
+      %h3
         = location.display_name
 
 %table
   %tr
-    - location.encounters.each do |e|
-      %td
-        %strong
-          = e.name
-
-    - location.characters.pcs.each do |c|
-      %td
-        = "#{c.occupation.try(:name).try(:capitalize)} #{c.name} "
-        = form_for(c.becomes(Character)) do |f|
-          = f.hidden_field :location_id, value: nil
-          = f.submit "Remove"
+    - if location.encounters.incomplete.present?
+      %p
+        %strong Encounters
+      - location.encounters.incomplete.each do |e|
+        = render 'encounters/encounter', encounter: e
 
     - if location.characters.pcs.present?
+      %p
+        %strong Characters
+      - location.characters.pcs.each do |c|
+        %td
+          = "#{c.occupation.try(:name).try(:capitalize)} #{c.name} "
+          = form_for(c.becomes(Character)) do |f|
+            = f.hidden_field :location_id, value: nil
+            = f.submit "Remove"
       %td
+        %p ---
         = form_for(location.becomes(Location)) do |f|
           = f.hidden_field :is_current, value: true
           = f.submit "Investigate"
-
 

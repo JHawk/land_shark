@@ -11,6 +11,7 @@ class Character < ActiveRecord::Base
   belongs_to :equipped_item, class_name: 'Item'
   belongs_to :game
   belongs_to :location
+  belongs_to :encounter
   belongs_to :occupation
   belongs_to :target_character, class_name: 'Character'
 
@@ -182,6 +183,7 @@ class Character < ActiveRecord::Base
       is_dead: true
     })
     encounter.check_complete! if encounter
+    self
   end
 
   def ranged_attack(target)

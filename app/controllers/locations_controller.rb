@@ -28,8 +28,10 @@ class LocationsController < ApplicationController
   end
 
   def update
-    if location_params.fetch(:is_current)
+    if to_bool(location_params.fetch(:is_current))
       @location.game.locations.update_all(is_current: false)
+      @location.spawn_pcs_together
+      @location.select_current_character!
     end
 
     @location.update(location_params)
