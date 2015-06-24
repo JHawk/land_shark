@@ -54,9 +54,9 @@ describe Character do
     let(:character) { FactoryGirl.create :pc }
     let(:item) { FactoryGirl.create :item }
 
-    subject { character.equip! }
-
     context "when character has items" do
+      subject { character.equip! }
+
       before do
         character.items << item
       end
@@ -65,6 +65,24 @@ describe Character do
         subject
 
         expect(character.reload.equipped_item).to eq(item)
+      end
+
+      context "when character doesn't have the item in their inventory" do
+        let(:new_item) { FactoryGirl.create :item }
+
+        subject { character.equip!(new_item) }
+
+        it 'adds the new item to the character inventory' do
+          subject
+
+          expect(character.reload.items).to include(new_item)
+        end
+
+        it 'sets the new item to the equipped item' do
+          subject
+
+          expect(character.reload.equipped_item).to eq(new_item)
+        end
       end
     end
   end

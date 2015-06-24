@@ -331,7 +331,7 @@ class Location < ActiveRecord::Base
     cc_response = cc.present? ?
       {
         current_character: cc,
-        current_actions: cc.actions.map {|a| {action: a,name: a.display_name}}
+        current_actions: cc.ready_actions.map {|a| {action: a,name: a.display_name}}
       } : {}
 
     building_positions(sprites_map).merge(cc_response)

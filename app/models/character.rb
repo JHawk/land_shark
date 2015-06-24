@@ -16,8 +16,13 @@ class Character < ActiveRecord::Base
   belongs_to :target_character, class_name: 'Character'
 
   has_many :actions, dependent: :destroy
+
   has_many :items
   has_many :moves, dependent: :destroy
+
+  def ready_actions
+    actions.select(&:ready?)
+  end
 
   def mind_attributes
     [
@@ -136,7 +141,12 @@ class Character < ActiveRecord::Base
   end
 
   def equip!(item=nil)
-    update_attributes!(equipped_item: items.sample)
+    if item.present?
+      items << item
+    else
+      item = items.sample
+    end
+    update_attributes!(equipped_item: item)
   end
 
   def drop_current_position(_path)

@@ -81,7 +81,6 @@ class Game < ActiveRecord::Base
   def wait_until_next!
     if encounters.incomplete.empty?
       generate_encounters!
-
       new_time = encounters.incomplete.order(:starts_at).first.starts_at
       update_attributes!(time: new_time)
     end

@@ -12,11 +12,11 @@ class Encounter < ActiveRecord::Base
     end
 
     def generate_start_time(time)
-      time + (rand(60).minutes)
+      time + ((rand(60) + 1).minutes)
     end
 
     def generate_end_time(time)
-      time + (rand(60).minutes)
+      time + ((rand(60) + 1).minutes)
     end
 
     def generate_at!(location)

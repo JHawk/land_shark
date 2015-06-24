@@ -46,7 +46,7 @@ describe GamesController do
   end
 
   describe "GET next_event" do
-    let(:game) {FactoryGirl.create :game}
+    let(:game) {FactoryGirl.create :game, :with_no_encounters}
 
     it "updates the game world" do
       prior_time = game.time

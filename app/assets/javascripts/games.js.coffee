@@ -66,7 +66,6 @@ onMapSuccess = (response) ->
   action_tds = for action in response['json_map']['current_actions']
     "<td>#{action['name']}</td>"
 
-
   actions = "<tr><td>Current Character : #{character_name}</td></tr><tr id='actions'>#{action_tds}</tr>"
   drop_z = response['json_map']
 
