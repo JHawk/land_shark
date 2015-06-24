@@ -21,6 +21,8 @@ describe Character do
 
   it { should have_many(:actions) }
   it { should have_many(:moves) }
+  it { should have_many(:relationships) }
+  it { should have_many(:acquaintances) }
 
   it { should belong_to(:equipped_item) }
   it { should belong_to(:occupation) }
@@ -29,6 +31,31 @@ describe Character do
   it { should belong_to(:location) }
   it { should belong_to(:encounter) }
   it { should belong_to(:game) }
+
+  describe "#relationships" do
+    let(:character) { create :npc }
+    let(:enemy) { create :npc }
+    let(:friend) { create :npc }
+
+    before do
+      character.relationships.create(acquaintance: enemy, rating: -10)
+      character.relationships.create(acquaintance: friend, rating: 10)
+    end
+
+    describe "#enemies" do
+      subject { character.acquaintances.enemies }
+
+      it { is_expected.to include(enemy) }
+      it { is_expected.not_to include(friend) }
+    end
+
+    describe "#allies" do
+      subject { character.acquaintances.allies }
+
+      it { is_expected.to include(friend) }
+      it { is_expected.not_to include(enemy) }
+    end
+  end
 
   describe ".generate!" do
     subject { Characters::Human.generate! }

@@ -11,18 +11,28 @@ class Character < ActiveRecord::Base
 
   belongs_to :current_action, class_name: 'Action'
   belongs_to :equipped_item, class_name: 'Item'
+  belongs_to :target_item, class_name: 'Item'
+  belongs_to :target_character, class_name: 'Character'
   belongs_to :game
   belongs_to :location
   belongs_to :encounter
   belongs_to :occupation
 
-  belongs_to :target_character, class_name: 'Character'
-  belongs_to :target_item, class_name: 'Item'
+  has_many :relationships
+  has_many :acquaintances, through: :relationships do
+    def enemies
+      includes(:relationships).where('relationships.rating < 0')
+    end
 
-  has_many :actions, dependent: :destroy
+    def allies
+      includes(:relationships).where('relationships.rating > 0')
+    end
+  end
 
   has_many :items
+
   has_many :moves, dependent: :destroy
+  has_many :actions, dependent: :destroy
 
   def ready_actions
     actions.select(&:ready?)

@@ -8,6 +8,7 @@ class Location < ActiveRecord::Base
   include Pathfinder::Finders
 
   has_one :current_character, class_name: 'Character'
+
   belongs_to :game
 
   validates_presence_of :type
@@ -39,7 +40,7 @@ class Location < ActiveRecord::Base
     group
   end
 
-  has_many :encounters do
+  has_many :encounters, dependent: :destroy do
   end
 
   has_many :moves, through: :characters do
@@ -48,7 +49,7 @@ class Location < ActiveRecord::Base
     end
   end
 
-  has_many :buildings do
+  has_many :buildings, dependent: :destroy do
   end
 
   has_many :characters do
@@ -233,12 +234,12 @@ class Location < ActiveRecord::Base
         end
       end
 
-      nextone = next_current_character
+      next_one = next_current_character
 
-      if nextone[:pc]
-        self.update_attributes!(current_character_id: nextone[:pc].id)
+      if next_one[:pc]
+        self.update_attributes!(current_character_id: next_one[:pc].id)
       end
-      nextone
+      next_one
     else
       false
     end
