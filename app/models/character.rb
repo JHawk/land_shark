@@ -7,6 +7,8 @@ class Character < ActiveRecord::Base
   include StInheritable
   include Positionable
 
+  validate :equipped_item_in_inventory
+
   belongs_to :current_action, class_name: 'Action'
   belongs_to :equipped_item, class_name: 'Item'
   belongs_to :game
@@ -141,12 +143,18 @@ class Character < ActiveRecord::Base
   end
 
   def equip!(item=nil)
-    if item.present?
-      items << item
-    else
-      item = items.sample
-    end
+    item ||= items.sample
     update_attributes!(equipped_item: item)
+  end
+
+  def equipped_item_in_inventory?
+    !equipped_item || items.include?(equipped_item)
+  end
+
+  def equipped_item_in_inventory
+    unless equipped_item_in_inventory?
+      errors.add(:character, "Equipped item not in inventory")
+    end
   end
 
   def drop_current_position(_path)

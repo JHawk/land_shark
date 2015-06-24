@@ -106,16 +106,8 @@ describe Character do
 
         subject { character.equip!(new_item) }
 
-        it 'adds the new item to the character inventory' do
-          subject
-
-          expect(character.reload.items).to include(new_item)
-        end
-
         it 'sets the new item to the equipped item' do
-          subject
-
-          expect(character.reload.equipped_item).to eq(new_item)
+          expect {subject}.to raise_error(Exception)
         end
       end
     end
@@ -205,7 +197,7 @@ describe Character do
       end
 
       context 'when character has an equipped item' do
-        let(:item) { FactoryGirl.create :item }
+        let(:item) { FactoryGirl.create :item, character: character }
 
         before do
           character.update_attributes!(equipped_item: item)
