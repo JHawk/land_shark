@@ -50,6 +50,40 @@ describe Character do
     it { subject.is_pc.should be_falsey }
   end
 
+  describe "#tick" do
+    let(:character) { create :npc, is_dead: is_dead}
+    let(:action) { create :run, character: character }
+    let(:time) { Time.zone.now }
+
+    before do
+      allow(action).to receive(:tick)
+
+      character.current_action = action
+    end
+
+    subject { character.tick(time) }
+
+    context 'when character is dead' do
+      let(:is_dead) { true }
+
+      it 'does not tick the current action' do
+        expect(action).not_to receive(:tick)
+
+        subject
+      end
+    end
+
+    context 'when character is alive' do
+      let(:is_dead) { false }
+
+      it 'ticks the current action' do
+        expect(action).to receive(:tick)
+
+        subject
+      end
+    end
+  end
+
   describe "#equip!" do
     let(:character) { FactoryGirl.create :pc }
     let(:item) { FactoryGirl.create :item }

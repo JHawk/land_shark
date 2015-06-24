@@ -5,8 +5,7 @@ FactoryGirl.define do
     character { FactoryGirl.create :character }
   end
 
-  factory :action_run do
-    type { 'Actions::Run' }
+  factory :run, class: Actions::Run do
     ticks { 0 }
     character { FactoryGirl.create :character }
   end

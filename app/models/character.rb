@@ -291,9 +291,17 @@ class Character < ActiveRecord::Base
   end
 
   def tick(time)
-    if current_action
+    if current_action && alive?
       current_action.tick time
     end
+  end
+
+  def alive?
+    !dead?
+  end
+
+  def dead?
+    !!is_dead
   end
 
   def idle?(time)
