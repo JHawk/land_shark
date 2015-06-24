@@ -13,7 +13,7 @@ action_buttons = () -> $('.location_map #actions td')
 selected_action = () ->
   $('.location_map #actions td.selected').text().toLowerCase().replace(' ', '_')
 
-moveTo = (x,y,z,character_id,target_character_id) ->
+moveTo = (x,y,z,character_id,target_character_id,target_item_id) ->
   id = game_id()
   $.ajax(
     url: "/games/#{id}"
@@ -21,6 +21,7 @@ moveTo = (x,y,z,character_id,target_character_id) ->
       game_action: selected_action()
       character_id: character_id
       target_character_id: target_character_id
+      target_item_id: target_item_id
       id: id
       x: x
       y: y
@@ -122,7 +123,12 @@ onMapSuccess = (response) ->
     coord = "[#{cell_x}, #{cell_y}]"
     visible = drop_z[coord]
     target_character_id = undefined
+    target_item_id = undefined
+
+    if visible?["damage"] || visible?[0]?["damage"]
+      target_item_id = visible['id'] || visible?[0]?['id']
+
     if visible?["charisma"] || visible?[0]?["charisma"]
       target_character_id = visible['id'] || visible?[0]?['id']
-    moveTo(cell_x,cell_y,0,character_id,target_character_id)
+    moveTo(cell_x,cell_y,0,character_id,target_character_id,target_item_id)
 

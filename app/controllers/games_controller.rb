@@ -44,6 +44,11 @@ class GamesController < ApplicationController
       character.update_attributes!(target_character_id: tci)
     end
 
+    tii = params['target_item_id']
+    if tii && Item.find(tii)
+      character.update_attributes!(target_item_id: tii)
+    end
+
     if character.can?(params['game_action'])
       position = [params['x'], params['y'], params['z']].map(&:to_i)
       @game.move!(character, position, params['game_action'])

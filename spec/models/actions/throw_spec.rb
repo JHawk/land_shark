@@ -9,7 +9,7 @@ describe Actions::Throw do
     subject { action.ready? }
 
     context 'when item equipped' do
-      let(:item) { FactoryGirl.create :item }
+      let(:item) { FactoryGirl.create :item, character: character }
 
       before do
         character.update_attributes!(equipped_item: item)

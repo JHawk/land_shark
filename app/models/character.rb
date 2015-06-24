@@ -15,7 +15,9 @@ class Character < ActiveRecord::Base
   belongs_to :location
   belongs_to :encounter
   belongs_to :occupation
+
   belongs_to :target_character, class_name: 'Character'
+  belongs_to :target_item, class_name: 'Item'
 
   has_many :actions, dependent: :destroy
 
@@ -94,6 +96,7 @@ class Character < ActiveRecord::Base
       Actions::Run.create!(character: character)
       Actions::HunkerDown.create!(character: character)
       Actions::Throw.create!(character: character)
+      Actions::PickUp.create!(character: character)
       Actions::Equip.create!(character: character)
 
       character.generate_equipment!
@@ -138,8 +141,7 @@ class Character < ActiveRecord::Base
     5.times do |i|
       items << Item.create!(name: "knife #{rand 100000}", damage: (rand 5))
     end
-
-    self.update_attributes!(equipped_item_id: items.sample.id)
+    equip!
   end
 
   def equip!(item=nil)
