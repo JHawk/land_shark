@@ -13,8 +13,8 @@ describe Building do
     it 'is offset correctly' do
       grid = subject
 
-      expect(grid[[11,10]][:walkable]).to be_false
-      expect(grid[[19,14]][:walkable]).to be_false
+      expect(grid[[11,10]][:walkable]).to be_falsey
+      expect(grid[[19,14]][:walkable]).to be_falsey
     end
   end
 

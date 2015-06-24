@@ -29,6 +29,10 @@ class Action < ActiveRecord::Base
     self
   end
 
+  def ready?
+    true
+  end
+
   # use last ticked at instead of passing around the time
   def times_up?(time=last_ticked_at)
     finished || finished_at <= time

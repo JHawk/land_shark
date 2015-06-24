@@ -27,12 +27,12 @@ describe Encounter do
     subject { encounter.check_complete! }
 
     context 'when no npcs' do
-      it { should be_false }
+      it { should be_falsey }
 
       it 'does not update the encounter' do
         subject
 
-        expect(encounter.reload.completed?).to be_false
+        expect(encounter.reload.completed?).to be_falsey
       end
     end
 
@@ -46,24 +46,24 @@ describe Encounter do
       context 'when npcs are not all dead' do
         let(:is_dead) { false }
 
-        it { should be_false }
+        it { should be_falsey }
 
         it 'does update the encounter' do
           subject
 
-          expect(encounter.reload.completed?).to be_false
+          expect(encounter.reload.completed?).to be_falsey
         end
       end
 
       context 'when npcs are all dead' do
         let(:is_dead) { true }
 
-        it { should be_true }
+        it { should be_truthy }
 
         it 'does update the encounter' do
           subject
 
-          expect(encounter.reload.completed?).to be_true
+          expect(encounter.reload.completed?).to be_truthy
         end
       end
     end

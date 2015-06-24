@@ -334,8 +334,8 @@ describe Location do
           result = subject
 
           expect(pc.current_action.reload.ticks).to be > 2
-          expect(pc.current_action.reload.times_up?(result[:time])).to be_true
-          expect(pc.current_action.reload.finished?).to be_true
+          expect(pc.current_action.reload.times_up?(result[:time])).to be_truthy
+          expect(pc.current_action.reload.finished?).to be_truthy
           expect(result[:pc]).to eq(pc)
           expect(result[:time]).to be > time
         end
@@ -359,7 +359,7 @@ describe Location do
 
       let(:position) { [1,1,1] }
 
-      it { should be_false }
+      it { should be_falsey }
 
       it "skips the update" do
         subject
@@ -389,7 +389,7 @@ describe Location do
       let(:position) { [1,1,1] }
       let(:character) { FactoryGirl.create :character, x:2, y:2, z:2, land_speed:5 }
 
-      it { should be_false }
+      it { should be_falsey }
 
       it "skips the character's updates" do
         subject
@@ -398,6 +398,9 @@ describe Location do
         expect(character.reload.y).to eq(2)
         expect(character.reload.z).to eq(2)
       end
+    end
+
+    context "when character can't perform action" do
     end
   end
 

@@ -228,7 +228,9 @@ class Location < ActiveRecord::Base
 
       # TODO - fix when prior action at and timestamps are millis
       characters.each do |c|
-        c.moves.delete_all
+        c.moves.each do |m|
+          m.destroy
+        end
       end
 
       nextone = next_current_character

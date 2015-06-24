@@ -4,6 +4,7 @@
     %th Complete
     %th Starts
     %th Ends
+    %th Location
   %tbody
     %tr
       %td
@@ -14,4 +15,6 @@
         = encounter.starts_at
       %td
         = encounter.ends_at
+      %td
+        = encounter.location.display_name
 

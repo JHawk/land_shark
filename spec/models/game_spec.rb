@@ -98,7 +98,9 @@ describe Game do
     context "when no incomplete encounters" do
       before do
         game.locations.each do |l|
-          l.encounters.delete_all
+          l.encounters.each do |e|
+            e.update_attributes!(completed: true)
+          end
         end
       end
 

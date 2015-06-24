@@ -33,7 +33,7 @@ describe LocationsController do
 
           put :update, {:id => location.to_param, :location => valid_attributes.merge({'is_current' => 'false'})}, format: :json
 
-          expect(location.reload.is_current).to be_false
+          expect(location.reload.is_current).to be_falsey
         end
       end
 
@@ -42,8 +42,8 @@ describe LocationsController do
 
         put :update, {:id => location.to_param, :location => valid_attributes.merge({'is_current' => 'true'})}, format: :json
 
-        expect(location.reload.is_current).to be_true
-        expect(current_location.reload.is_current).to be_false
+        expect(location.reload.is_current).to be_truthy
+        expect(current_location.reload.is_current).to be_falsey
       end
 
       it "assigns the location" do

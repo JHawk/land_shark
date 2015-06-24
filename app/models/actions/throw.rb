@@ -2,6 +2,10 @@ class Actions::Throw < Action
   class << self
   end
 
+  def ready?
+    character.equipped_item.present?
+  end
+
   def start!(time)
     super(time)
 

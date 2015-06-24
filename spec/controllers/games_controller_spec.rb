@@ -48,12 +48,6 @@ describe GamesController do
   describe "GET next_event" do
     let(:game) {FactoryGirl.create :game}
 
-    before do
-      game.locations.each do |l|
-        l.encounters.delete_all
-      end
-    end
-
     it "updates the game world" do
       prior_time = game.time
 

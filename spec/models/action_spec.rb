@@ -15,7 +15,7 @@ describe Action do
       subject
 
       expect(action.reload.started_at.to_i).to eq(time.to_i)
-      expect(action.reload.finished?).to be_false
+      expect(action.reload.finished?).to be_falsey
     end
   end
 
@@ -95,13 +95,13 @@ describe Action do
     context 'when finished_at before given time' do
       let(:time) { finished_at + 1.hour }
 
-      it { should be_true }
+      it { should be_truthy }
     end
 
     context 'when finished_at after given time' do
       let(:time) { finished_at - 1.hour }
 
-      it { should be_false }
+      it { should be_falsey }
     end
   end
 end

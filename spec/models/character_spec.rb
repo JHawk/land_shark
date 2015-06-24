@@ -41,13 +41,13 @@ describe Character do
   describe ".generate_pc!" do
     subject { Characters::Human.generate_pc! }
 
-    it { subject.is_pc.should be_true }
+    it { subject.is_pc.should be_truthy }
   end
 
   describe ".generate_npc!" do
     subject { Characters::Human.generate_npc! }
 
-    it { subject.is_pc.should be_false }
+    it { subject.is_pc.should be_falsey }
   end
 
   describe "#equip!" do
@@ -108,20 +108,20 @@ describe Character do
     context "when no current_action" do
       let(:current_action) { nil }
 
-      it { should be_true }
+      it { should be_truthy }
     end
 
     context "when current_action is present" do
       context "when current_action is finished" do
         let(:current_action) { FactoryGirl.create :action, finished_at: time - 1.hour }
 
-        it { should be_true }
+        it { should be_truthy }
       end
 
       context "when current_action is not finished" do
         let(:current_action) { FactoryGirl.create :action, finished_at: time + 1.hour }
 
-        it { should be_false }
+        it { should be_falsey }
       end
     end
   end
@@ -134,7 +134,33 @@ describe Character do
     context "when action is nil" do
       let(:action_name) { nil }
 
-      it { should be_false }
+      it { should be_falsey }
+    end
+
+    context "when character has action" do
+      let(:action_name) { 'run' }
+      let!(:action) { FactoryGirl.create :action, character: character }
+
+      it { should be_truthy }
+    end
+
+    context "when character has action with a requirement" do
+      let(:action_name) { 'throw' }
+      let!(:action) { FactoryGirl.create :throw, character: character }
+
+      context 'when character has no equipped item' do
+        it { should be_falsey }
+      end
+
+      context 'when character has an equipped item' do
+        let(:item) { FactoryGirl.create :item }
+
+        before do
+          character.update_attributes!(equipped_item: item)
+        end
+
+        it { should be_truthy }
+      end
     end
   end
 
@@ -254,7 +280,7 @@ describe Character do
 
     subject { character.dies! }
 
-    it { subject.is_dead?.should be_true }
+    it { subject.is_dead?.should be_truthy }
 
     context "when character is part of an encounter" do
       let(:encounter) { FactoryGirl.create :encounter }

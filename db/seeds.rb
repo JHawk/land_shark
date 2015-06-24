@@ -14,3 +14,4 @@ test_user = User.create!(email: 'test@test.com', password: 'password', password_
 ).each do |occupation_name|
   Occupation.where(:name => occupation_name).first_or_create
 end
+

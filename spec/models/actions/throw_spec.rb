@@ -5,6 +5,24 @@ describe Actions::Throw do
   let(:action) { Actions::Throw.create! character: character }
   let(:time) { Time.zone.now }
 
+  describe "#ready?" do
+    subject { action.ready? }
+
+    context 'when item equipped' do
+      let(:item) { FactoryGirl.create :item }
+
+      before do
+        character.update_attributes!(equipped_item: item)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when item not equipped' do
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe "#start!" do
     subject { action.start!(time) }
 

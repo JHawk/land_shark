@@ -41,7 +41,7 @@ describe Pathfinder::Finders::AStar do
           G
         end
 
-        it { subject[[1,0]][:walkable].should be_false }
+        it { subject[[1,0]][:walkable].should be_falsey }
       end
 
       context "when _ on map" do
@@ -52,7 +52,7 @@ describe Pathfinder::Finders::AStar do
           G
         end
 
-        it { subject[[1,0]][:walkable].should be_false }
+        it { subject[[1,0]][:walkable].should be_falsey }
       end
     end
   end

@@ -191,7 +191,8 @@ class Character < ActiveRecord::Base
   end
 
   def can?(action_name, target=nil)
-    !!action_by_type(action_name)
+    action = action_by_type action_name
+    !!(action && action.ready?)
   end
 
   def action_by_type(action_type)
