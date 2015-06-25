@@ -79,6 +79,13 @@
               Dead
           %td
             = character.is_dead
+        %tr
+          %td
+            %strong
+              Target Character
+          %td
+            = character.target_character.try(:name)
+
     %td
       %table
         %th

@@ -28,6 +28,8 @@ class Character < ActiveRecord::Base
       includes(:relationships).where('relationships.rating > 0')
     end
   end
+  delegate :enemies, to: :acquaintances
+  delegate :allies, to: :acquaintances
 
   has_many :items
 
@@ -213,11 +215,31 @@ class Character < ActiveRecord::Base
 
     def resolve!
       target.update_attributes!(hit_points: target.hit_points - @damage)
+      target.hate!(attacker)
+      if target.enemies.include?(attacker)
+        target.fight!
+      end
 
       if target.hit_points < 1
         target.dies!
       end
     end
+  end
+
+  def fighting?
+    current_action.present? && combat_actions.include?(current_action)
+  end
+
+  def fight!
+    if !fighting? && combat_actions.present?
+      update_attributes!(current_action: nil)
+    end
+  end
+
+  def hate!(other)
+    rel = relationships.where(acquaintance: other).first_or_create
+    new_rating = rel.rating.present? ? rel.rating - 10 : -10
+    rel.update_attributes!(rating: new_rating)
   end
 
   def dies!

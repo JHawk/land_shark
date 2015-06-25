@@ -59,5 +59,6 @@ class Action < ActiveRecord::Base
       on_finish
     end
   end
+
 end
 

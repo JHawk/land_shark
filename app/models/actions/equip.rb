@@ -2,6 +2,10 @@ class Actions::Equip < Action
   class << self
   end
 
+  def combat?
+    true
+  end
+
   def ready?
     character.items.present?
   end

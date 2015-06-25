@@ -165,6 +165,35 @@ describe Character do
     end
   end
 
+  describe "#hate!" do
+    let(:character) { create :npc }
+    let(:other_character) { create :npc }
+
+    subject { character.hate!(other_character) }
+
+    context 'when the character does not have a relationship with the other character' do
+      it 'creates a new enemy relationship' do
+        subject
+
+        expect(character.enemies).to include(other_character)
+      end
+    end
+
+    context 'when the character has a relationship with the other character' do
+      let!(:relationship) do
+        character.relationships.create!(acquaintance: other_character, rating: 5)
+      end
+
+      it 'updates the relationship' do
+        subject
+
+        expect(character.enemies).to include(other_character)
+        expect(relationship.reload.rating).to eq(-5)
+      end
+    end
+
+  end
+
   describe "#tick" do
     let(:character) { create :npc, is_dead: is_dead}
     let(:action) { create :run, character: character }
