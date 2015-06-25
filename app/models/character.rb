@@ -34,6 +34,18 @@ class Character < ActiveRecord::Base
   has_many :moves, dependent: :destroy
   has_many :actions, dependent: :destroy
 
+  def ready_combat_actions
+    ready_actions.select(&:combat?)
+  end
+
+  def ready_noncombat_actions
+    ready_actions.select(&:noncombat?)
+  end
+
+  def combat_actions
+    actions.select(&:combat?)
+  end
+
   def ready_actions
     actions.select(&:ready?)
   end
@@ -149,7 +161,7 @@ class Character < ActiveRecord::Base
 
   def generate_equipment!
     5.times do |i|
-      items << Item.create!(name: "knife #{rand 100000}", damage: (rand 5))
+      items << Item.create!(name: "knife #{rand 100000}", damage: (rand 5) + 1)
     end
     equip!
   end
@@ -231,6 +243,52 @@ class Character < ActiveRecord::Base
     end
   end
 
+  def needs_target?
+    !valid_target?
+  end
+
+  def valid_target?
+    target_character.present? && target_character.alive?
+  end
+
+  def decide_target
+    if needs_target?
+      update_attributes!(target_character: acquaintances.enemies.first)
+    end
+  end
+
+  def decide_action
+    selected_action = if valid_target? && ready_combat_actions.present?
+      ready_combat_actions.sample
+    elsif ready_noncombat_actions.present?
+      ready_noncombat_actions.sample
+    end
+
+    update_attributes!(current_action: selected_action)
+    selected_action
+  end
+
+  def decide_path
+    destination = if valid_target?
+      target_character.position
+    else
+      location.rand_open_position
+    end
+
+    _path = location.find_path_a(position, destination)
+
+    if drop_current_position(_path).present?
+      update_attributes!({
+        path: _path.to_json
+      })
+    end
+    destination
+  end
+
+  def start_current_action!(time)
+    current_action.start!(time)
+  end
+
   def start_action!(action_name, target_position, time)
     position_h = if target_position.is_a? Array
       {
@@ -238,9 +296,9 @@ class Character < ActiveRecord::Base
         y:target_position[1],
         z:target_position[2]
       }
-                 else
-                   target_position
-                 end
+    else
+      target_position
+    end
 
     _path = location.find_path_a(position, position_h)
 

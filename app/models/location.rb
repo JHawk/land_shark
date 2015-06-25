@@ -11,12 +11,12 @@ class Location < ActiveRecord::Base
 
   belongs_to :game
 
-  validates_presence_of :type
+  validates_presence_of :type, :game
 
   before_save :ensure_current_pc
 
   class << self
-    def generate!(game=nil)
+    def generate!(game)
       self.create!({game: game}).tap do |location|
         postition = location.rand_open_position
 
@@ -197,7 +197,10 @@ class Location < ActiveRecord::Base
               time: utc_t
             }
           else
-            c.start_action!(:run, rand_open_position, time)
+            c.decide_target
+            c.decide_action
+            c.decide_path
+            c.start_current_action!(time)
           end
         end
       end

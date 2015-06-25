@@ -17,7 +17,9 @@ describe Location do
   end
 
   describe ".generate!" do
-    subject { Locations::Hospital.generate! }
+    let(:game) { create :game }
+
+    subject { Locations::Hospital.generate!(game) }
 
     it { subject.buildings.should_not be_empty }
     it { subject.buildings.first.bottom_left_x.should_not be_nil }
@@ -283,7 +285,7 @@ describe Location do
       it 'places the character' do
         subject
 
-        expect(character.reload.location).to eq(Locations::Hospital.first)
+        expect(character.reload.location.id).to eq(location.id)
 
         expect(character.reload.x).not_to be_nil
         expect(character.reload.y).not_to be_nil
@@ -317,6 +319,11 @@ describe Location do
       let!(:pc) { FactoryGirl.create :character_visible_at_location, x:1, y:2, z:0, land_speed:5, is_pc: true }
 
       let!(:npc) { FactoryGirl.create :character, location_id: location.id, x:1, y:3, z:0, is_pc: false }
+      let(:run) { create :run }
+
+      before do
+        npc.actions << run
+      end
 
       context "when pc character is idle" do
         it { subject[:pc].should eq(pc) }
@@ -589,7 +596,8 @@ describe Location do
     end
 
     context "when location has a building" do
-      let(:location) { Locations::Hospital.generate! }
+      let(:game) { create :game }
+      let(:location) { Locations::Hospital.generate!(game) }
       let(:building) { location.buildings.first }
 
       let(:position) { building.grid.keys.reject {|key| key.is_a? Symbol}.first }
@@ -598,7 +606,8 @@ describe Location do
     end
 
     context "when location has a character and a building" do
-      let(:location) { Locations::Hospital.generate! }
+      let(:game) { create :game }
+      let(:location) { Locations::Hospital.generate!(game) }
       let(:character) { FactoryGirl.create :character }
       let(:building) { location.buildings.first }
 

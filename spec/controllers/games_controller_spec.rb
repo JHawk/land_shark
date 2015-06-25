@@ -46,7 +46,7 @@ describe GamesController do
   end
 
   describe "GET next_event" do
-    let(:game) {FactoryGirl.create :game, :with_no_encounters}
+    let(:game) { FactoryGirl.create :game, :with_no_encounters }
 
     it "updates the game world" do
       prior_time = game.time
@@ -90,15 +90,6 @@ describe GamesController do
       it "redirects to the created game" do
         post :create, {:game => valid_attributes}, valid_session
         response.should redirect_to(Game.last)
-      end
-    end
-
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved game as @game" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Game.any_instance.stub(:save).and_return(false)
-        post :create, {:game => {  }}, valid_session
-        assigns(:game).should be_a_new(Game)
       end
     end
   end

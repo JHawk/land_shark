@@ -7,19 +7,27 @@ describe Game do
 
   it { should validate_presence_of(:user) }
 
-  describe "after_create" do
+  describe "#setup!" do
     let(:game) { FactoryGirl.create :game }
 
+    subject { game.setup! }
+
     it 'will set the time' do
+      subject
+
       expect(game.time).not_to be_nil
     end
 
     it 'will create a new character' do
+      subject
+
       expect(game.characters.count).to be > 1
       expect(game.characters.name).not_to be_nil
     end
 
     it 'will create new locations' do
+      subject
+
       expect(game.hospital).not_to be_nil
       expect(game.police_station).not_to be_nil
     end
@@ -29,6 +37,7 @@ describe Game do
     let(:game) { FactoryGirl.create :game }
 
     before do
+      game.setup!
       game.current_location!
     end
 
@@ -43,6 +52,7 @@ describe Game do
     let(:game) { FactoryGirl.create :game }
 
     before do
+      game.setup!
       game.current_location!
     end
 
@@ -83,6 +93,7 @@ describe Game do
 
     context "when incomplete encounters" do
       before do
+        game.setup!
         expect(game.encounters.incomplete).to be_present
       end
 
@@ -97,11 +108,8 @@ describe Game do
 
     context "when no incomplete encounters" do
       before do
-        game.locations.each do |l|
-          l.encounters.each do |e|
-            e.update_attributes!(completed: true)
-          end
-        end
+        game.generate_characters!
+        game.generate_locations!
       end
 
       it "generates an encounter" do
@@ -118,6 +126,8 @@ describe Game do
     let(:character) { location.current_character }
 
     before do
+      game.generate_characters!
+      game.generate_locations!
       location.spawn character
     end
 

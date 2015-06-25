@@ -2,6 +2,10 @@ class Actions::Equip < Action
   class << self
   end
 
+  def ready?
+    character.items.present?
+  end
+
   def equip_time
     2.seconds
   end

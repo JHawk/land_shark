@@ -21,7 +21,12 @@ class Game < ActiveRecord::Base
     end
   end
 
-  after_create :set_time!, :generate_characters!, :generate_locations!, :generate_encounters!
+  def setup!
+    set_time!
+    generate_characters!
+    generate_locations!
+    generate_encounters!
+  end
 
   def move!(character, position, action_name)
     result = current_location.move!(character, position, action_name)

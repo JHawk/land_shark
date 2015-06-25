@@ -33,6 +33,7 @@ class GamesController < ApplicationController
     @game = Game.new(game_params)
     @game.user = current_user
     @game.save
+    @game.setup!
     respond_with(@game)
   end
 

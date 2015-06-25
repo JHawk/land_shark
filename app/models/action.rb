@@ -29,6 +29,14 @@ class Action < ActiveRecord::Base
     self
   end
 
+  def combat?
+    false
+  end
+
+  def noncombat?
+    !combat?
+  end
+
   def ready?
     true
   end

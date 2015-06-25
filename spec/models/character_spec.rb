@@ -77,6 +77,94 @@ describe Character do
     it { subject.is_pc.should be_falsey }
   end
 
+  describe "#decide_target" do
+    let(:character) { create :npc }
+
+    subject { character.decide_target }
+
+    context 'when character has a current target' do
+      context 'when character has a current target' do
+        let(:current_target) { create :npc, is_dead: is_dead }
+        before do
+          character.update_attributes!(target_character: current_target)
+        end
+
+        context 'when current target is alive' do
+          let(:is_dead) { false }
+
+          it 'keeps the same target' do
+            expect { subject }.not_to change { character.target_character }
+          end
+        end
+
+        context 'when current target is dead' do
+          let(:is_dead) { true }
+
+          it 'targets nothing' do
+            expect { subject }.to change { character.target_character }.to(nil)
+          end
+
+          context 'when another enemy is present' do
+            let!(:other_enemy) { create :npc }
+            let!(:relationship) { create :relationship, character: character, rating: -10, acquaintance: other_enemy }
+
+            it 'targets the new enemy' do
+              expect { subject }.to change { character.target_character }.from(current_target).to(other_enemy)
+            end
+          end
+        end
+      end
+
+    end
+  end
+
+  describe "#decide_action" do
+    let(:character) { create :npc }
+
+    subject { character.decide_action }
+
+    context 'when character has no actions' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when character has an action' do
+      let!(:action) { create :run, character: character }
+
+      it { is_expected.to eq(action) }
+
+      it 'sets the current action' do
+        expect { subject }.to change { character.current_action }.to(action)
+      end
+    end
+  end
+
+  describe "#decide_path" do
+    let(:location) { create :location }
+    let(:character) { create :npc, location: location, x:1, y:1, z:1 }
+
+    before do
+      character.update_attributes!(target_character: current_target)
+    end
+
+    subject { character.decide_path }
+
+    context 'when character has no target' do
+      let(:current_target) { nil }
+
+      it { is_expected.to be_a(Hash) }
+    end
+
+    context 'when character has a target' do
+      let(:current_target) { create :npc, location: location, x:1, y:4, z:1 }
+
+      it { is_expected.to eq(current_target.position) }
+
+      it 'sets the path' do
+        expect { subject }.to change { character.path }
+      end
+    end
+  end
+
   describe "#tick" do
     let(:character) { create :npc, is_dead: is_dead}
     let(:action) { create :run, character: character }

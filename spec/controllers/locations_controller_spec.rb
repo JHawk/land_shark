@@ -3,7 +3,7 @@ require 'spec_helper'
 describe LocationsController do
   before { sign_in user }
 
-  let(:game) { FactoryGirl.create :game }
+  let(:game) { create :game, :with_setup }
   let(:user) { create :user }
   let(:location) { game.locations.first }
 

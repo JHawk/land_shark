@@ -4,6 +4,7 @@ FactoryGirl.define do
     max_y { 100 }
     max_z { 100 }
     type { 'Locations::Hospital' }
+    game
   end
 end
 

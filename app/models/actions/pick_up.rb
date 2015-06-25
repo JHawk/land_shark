@@ -2,6 +2,10 @@ class Actions::PickUp < Action
   class << self
   end
 
+  def ready?
+    character.target_item.present?
+  end
+
   def start!(time)
     super(time)
 
