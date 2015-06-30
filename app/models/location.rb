@@ -5,7 +5,7 @@ require 'astrid'
 class Location < ActiveRecord::Base
 
   include StInheritable
-  include Pathfinder::Finders
+  include Astrid::Finders
 
   has_one :current_character, class_name: 'Character'
 

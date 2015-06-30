@@ -27,7 +27,7 @@ class Building < ActiveRecord::Base
   end
 
   def grid_rep
-    Pathfinder::Finders::AStar.new.grid_from_s_map(<<-G)
+    Astrid::Finders::AStar.new.grid_from_s_map(<<-G)
 ._________.
 .|.......|.
 .........|.
