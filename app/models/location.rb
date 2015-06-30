@@ -1,6 +1,6 @@
 require 'st_inheritable'
 require 'errors/wrong_character_moved_error'
-require 'pathfinder/finders/a_star'
+require 'astrid'
 
 class Location < ActiveRecord::Base
 

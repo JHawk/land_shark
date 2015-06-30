@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'pathfinder/finders/a_star'
 
 describe Location do
   it { should have_many(:characters) }

@@ -1,4 +1,4 @@
-require 'pathfinder/finders/a_star'
+require 'astrid'
 
 class Building < ActiveRecord::Base
   belongs_to :location
